@@ -6,13 +6,17 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.FileInputStream;
 import java.net.URL;
+import java.util.Iterator;
+
 import org.apache.commons.io.IOUtils;
+import org.json.JSONObject;
 import org.json.XML;
 
 public class XMLtoJSON {
     private URL url = null;
     private InputStream inputStream = null;
-
+    
+   
     public void getXMLfromJson() {
         try {
            
@@ -31,6 +35,7 @@ public class XMLtoJSON {
             org.json.JSONObject objJson = XML.toJSONObject(xml);
 
             System.out.println("JSON data : " + objJson);
+            System.out.println(objJson);
 
         } catch (Exception e) {
             e.printStackTrace();
