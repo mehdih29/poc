@@ -7,7 +7,7 @@ import java.io.File;
 import java.util.HashMap;
 import java.util.Map;
 
-import com.arismore.poste.utils.ParcelData;
+import com.arismore.poste.data.ParcelData;
 
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.Marshaller;

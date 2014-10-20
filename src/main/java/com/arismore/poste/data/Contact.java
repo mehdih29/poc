@@ -1,4 +1,4 @@
-package com.arismore.poste.utils;
+package com.arismore.poste.data;
 
 import java.util.List;
  
