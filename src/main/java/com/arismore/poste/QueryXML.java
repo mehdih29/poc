@@ -2,6 +2,7 @@ package com.arismore.poste;
 
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.xml.parsers.DocumentBuilder;
@@ -18,8 +19,11 @@ import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
 
+import com.arismore.poste.data.ParcelData;
 import com.arismore.poste.data.Traitement;
 import com.arismore.poste.data.UniversalNamespaceCache;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 
 public class QueryXML {
   public void query() throws ParserConfigurationException, SAXException,
@@ -37,59 +41,17 @@ public class QueryXML {
     
     
  // load the Document
-    Document document = builder.parse(new FileInputStream("/home/mehdi/laposte.xml"));;
+    Document document = builder.parse(new FileInputStream("/home/areva/laposte.xml"));;
     xpath.setNamespaceContext(new UniversalNamespaceCache(document, true));
     
     NodeList nodes1 = (NodeList) xpath.compile("/a:entry/a:title").evaluate(document, XPathConstants.NODESET);;
     for (int i=0; i<nodes1.getLength();i++){
         System.out.println(nodes1.item(i).getTextContent());
       }
-    
-    String isie = (String) xpath.compile("/a:entry/a:title/:div/:span[@class='id']/text()").evaluate(document, XPathConstants.STRING);
-    System.out.println(isie);
-    
-    Boolean image = (Boolean) xpath.compile("/a:entry/a:id/image?format=jpeg/text()").evaluate(document, XPathConstants.BOOLEAN);
-    System.out.println(image);
-    
-    String format = (String) xpath.compile("/a:entry/a:title/:div/:span[@class='format']/text()").evaluate(document, XPathConstants.STRING);
-    System.out.println(format);
-
-    String priorite = (String) xpath.compile("/a:entry/a:title/:div/:span[@class='priorite']/text()").evaluate(document, XPathConstants.STRING);
-    System.out.println(priorite);
-
-    String etat = (String) xpath.compile("/a:entry/a:title/:div/:span[@class='etat']/text()").evaluate(document, XPathConstants.STRING);
-	System.out.println(etat);
-	
-	String plateformTri = (String) xpath.compile("/a:entry/a:author/a:name/text()").evaluate(document, XPathConstants.STRING);
-	System.out.println(plateformTri);
-	
-	String envoloppe_expire = (String) xpath.compile("/a:entry/a:title/:div/:div[@class='expires']/text()").evaluate(document, XPathConstants.STRING);
-	System.out.println(envoloppe_expire);
-	
-	String cle_externe = (String) xpath.compile("/a:entry/a:title/div/div[@class='client']/span[@class='cleExterne']/text()").evaluate(document, XPathConstants.STRING);
-	System.out.println(cle_externe);
-	
-	String updated = (String) xpath.compile("/a:entry/a:updated/text()").evaluate(document, XPathConstants.STRING);
-	System.out.println(updated);
-	
-	String published = (String) xpath.compile("/a:entry/a:published/text()").evaluate(document, XPathConstants.STRING);
-	System.out.println(published);
-	
-	NodeList traitement = (NodeList) xpath.compile("/a:entry/a:content/:div/:ul[@class='traitement']/:li").evaluate(document, XPathConstants.NODESET);
-	List<Traitement> traitements = null;
-	System.out.println(traitement.getLength());
-	for (int i = 1; i <= traitement.getLength(); i++){
-		//System.out.println(traitement.item(i).getTextContent());
-		//traitements.add(
-				new Traitement(i, document, xpath);
-		System.out.println("finished");
-	}
-	
-	
-	
-	//String p = (String) xpath.compile("/a:entry/a:content/:div/:ul[@class='traitement']/:li[0]/:span[@class='dateDebut']/text()").evaluate(document, XPathConstants.STRING);
-	//System.out.println(p);
-   
+    ParcelData parcel = new ParcelData(document, xpath);
+    GsonBuilder builder1 = new GsonBuilder();
+	Gson gson = builder1.create();
+	System.out.println(gson.toJson(parcel));
   }
 
   public static void main(String[] args) throws XPathExpressionException, ParserConfigurationException, SAXException, IOException {
