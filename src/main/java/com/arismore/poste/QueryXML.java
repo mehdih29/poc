@@ -1,6 +1,8 @@
 package com.arismore.poste;
 
+import java.io.FileInputStream;
 import java.io.IOException;
+import java.util.List;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -12,10 +14,12 @@ import javax.xml.xpath.XPathExpressionException;
 import javax.xml.xpath.XPathFactory;
 
 import org.w3c.dom.Document;
-import org.w3c.dom.Element;
+import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
-import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
+
+import com.arismore.poste.data.Traitement;
+import com.arismore.poste.data.UniversalNamespaceCache;
 
 public class QueryXML {
   public void query() throws ParserConfigurationException, SAXException,
@@ -30,112 +34,62 @@ public class QueryXML {
     Document doc = null;
     XPathExpression expr = null;
     builder = factory.newDocumentBuilder();
-    doc = builder.parse("/home/areva/laposte.xml");
-
- // get the first element
-    Element element = doc.getDocumentElement();
-
-    // get all child nodes
-    NodeList nodes = element.getChildNodes();
-
-    // print the text content of each child
-    for (int i = 0; i < nodes.getLength(); i++) {
-       //System.out.println("" + nodes.item(i).getTextContent());
-    }
     
-    // create an XPathFactory
-    //XPathFactory xFactory = XPathFactory.newInstance();
-
-    // create an XPath object
-    //XPath xpath = xFactory.newXPath();
     
-    NodeList nodes1 = (NodeList) xpath.compile("/a:entry/a:title").evaluate(doc, XPathConstants.NODESET);
-
-
+ // load the Document
+    Document document = builder.parse(new FileInputStream("/home/mehdi/laposte.xml"));;
+    xpath.setNamespaceContext(new UniversalNamespaceCache(document, true));
     
+    NodeList nodes1 = (NodeList) xpath.compile("/a:entry/a:title").evaluate(document, XPathConstants.NODESET);;
     for (int i=0; i<nodes1.getLength();i++){
-      System.out.println(nodes1.item(i).getNodeValue());
-    }
-    System.out.println("here we go");
+        System.out.println(nodes1.item(i).getTextContent());
+      }
+    
+    String isie = (String) xpath.compile("/a:entry/a:title/:div/:span[@class='id']/text()").evaluate(document, XPathConstants.STRING);
+    System.out.println(isie);
+    
+    Boolean image = (Boolean) xpath.compile("/a:entry/a:id/image?format=jpeg/text()").evaluate(document, XPathConstants.BOOLEAN);
+    System.out.println(image);
+    
+    String format = (String) xpath.compile("/a:entry/a:title/:div/:span[@class='format']/text()").evaluate(document, XPathConstants.STRING);
+    System.out.println(format);
 
-    System.out.println(doc.toString());
-   /* 
-    expr = xpath.compile("/a:entry/a:title/div/span[@class='id']");
-	String isie;
+    String priorite = (String) xpath.compile("/a:entry/a:title/:div/:span[@class='priorite']/text()").evaluate(document, XPathConstants.STRING);
+    System.out.println(priorite);
+
+    String etat = (String) xpath.compile("/a:entry/a:title/:div/:span[@class='etat']/text()").evaluate(document, XPathConstants.STRING);
+	System.out.println(etat);
 	
-    
-    String result = (String) expr.evaluate(doc, XPathConstants.STRING);
-
-    System.out.println(result);
-
-    // cast the result to a DOM NodeList
-    System.out.println("here we go");
-    
-    expr = xpath.compile("/a:entry/a:id/image?format=jpeg/text()");
-	String image;
+	String plateformTri = (String) xpath.compile("/a:entry/a:author/a:name/text()").evaluate(document, XPathConstants.STRING);
+	System.out.println(plateformTri);
 	
-    Boolean check = (Boolean) expr.evaluate(doc, XPathConstants.BOOLEAN);
-    System.out.println(check);
-    
-    System.out.println("here we go");
-    
-    expr = xpath.compile("/a:entry/a:title/div/span[@class='format']/text()");
-    String format;
-    
-    result = (String) expr.evaluate(doc, XPathConstants.STRING);
-
-    System.out.println(result);
-
-    System.out.println("here we go");
-    
-    
-    expr = xpath.compile("/a:entry/a:title/div/span[@class='priorite']/text()");
-	String priorite;
+	String envoloppe_expire = (String) xpath.compile("/a:entry/a:title/:div/:div[@class='expires']/text()").evaluate(document, XPathConstants.STRING);
+	System.out.println(envoloppe_expire);
 	
-    Object result1 = expr.evaluate(doc, XPathConstants.NODESET);
-
-    // cast the result to a DOM NodeList
-    NodeList nodes1 = (NodeList) result1;
-    for (int i=0; i<nodes1.getLength();i++){
-      System.out.println(nodes1.item(i).getNodeValue());
-    }
-    System.out.println("here we go");
-    expr = xpath.compile("/a:entry/a:title/div/span[attribute::class='etat']/text()");
-	String etat;
-    
-	result1 = expr.evaluate(doc, XPathConstants.NODESET);
-
-    // cast the result to a DOM NodeList
-    nodes1 = (NodeList) result1;
-    for (int i=0; i<nodes1.getLength();i++){
-      System.out.println(nodes1.item(i).getNodeValue());
-    }*/
-    
- /*   
-    
-    // compile the XPath expression
-    expr = xpath.compile("//person[firstname='Lars']/lastname/text()");
-    // run the query and get a nodeset
-    Object result = expr.evaluate(doc, XPathConstants.NODESET);
-
-    // cast the result to a DOM NodeList
-    NodeList nodes = (NodeList) result;
-    for (int i=0; i<nodes.getLength();i++){
-      System.out.println(nodes.item(i).getNodeValue());
-    }
-    System.out.println("here we go");
-
-    // new XPath expression to get the number of people with name Lars
-    expr = xpath.compile("count(//person[firstname='Lars'])");
-    // run the query and get the number of nodes
-    Double number = (Double) expr.evaluate(doc, XPathConstants.NUMBER);
-    System.out.println("Number of objects " +number);
-
-    // do we have more than 2 people with name Lars?
-    expr = xpath.compile("count(//person[firstname='Lars']) >2");
-    // run the query and get the number of nodes
-    Boolean check = (Boolean) expr.evaluate(doc, XPathConstants.BOOLEAN);
-    System.out.println(check);*/
+	String cle_externe = (String) xpath.compile("/a:entry/a:title/div/div[@class='client']/span[@class='cleExterne']/text()").evaluate(document, XPathConstants.STRING);
+	System.out.println(cle_externe);
+	
+	String updated = (String) xpath.compile("/a:entry/a:updated/text()").evaluate(document, XPathConstants.STRING);
+	System.out.println(updated);
+	
+	String published = (String) xpath.compile("/a:entry/a:published/text()").evaluate(document, XPathConstants.STRING);
+	System.out.println(published);
+	
+	NodeList traitement = (NodeList) xpath.compile("/a:entry/a:content/:div/:ul[@class='traitement']/:li").evaluate(document, XPathConstants.NODESET);
+	List<Traitement> traitements = null;
+	System.out.println(traitement.getLength());
+	for (int i = 1; i <= traitement.getLength(); i++){
+		//System.out.println(traitement.item(i).getTextContent());
+		//traitements.add(
+				new Traitement(i, document, xpath);
+		System.out.println("finished");
+	}
+	
+	
+	
+	//String p = (String) xpath.compile("/a:entry/a:content/:div/:ul[@class='traitement']/:li[0]/:span[@class='dateDebut']/text()").evaluate(document, XPathConstants.STRING);
+	//System.out.println(p);
+   
   }
 
   public static void main(String[] args) throws XPathExpressionException, ParserConfigurationException, SAXException, IOException {
