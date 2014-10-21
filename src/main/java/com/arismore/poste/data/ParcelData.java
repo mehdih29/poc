@@ -11,10 +11,10 @@ import javax.xml.bind.annotation.XmlType;
 import org.eclipse.persistence.oxm.annotations.XmlPath;
  
 @XmlRootElement(name="a:entry")
-//@XmlType(propOrder={"title", "id", "author", "updated", "traitement"})
+@XmlType(propOrder={"isie", "image", "priorite", "etat"}) //, "traitement"})
 @XmlAccessorType(XmlAccessType.FIELD)
 public class ParcelData {
-	
+
 	@XmlPath("a:title/div/span[@class='id']/text()")
 	private String isie;
 	

@@ -20,7 +20,7 @@ public class XMLtoJSON {
     public void getXMLfromJson() {
         try {
            
-            FileInputStream inputStream = new FileInputStream("/home/mehdi/laposte.xml"); 
+            FileInputStream inputStream = new FileInputStream("/home/areva/laposte.xml"); 
             // Session IOUtils;
             String xml = IOUtils.toString(inputStream);
 

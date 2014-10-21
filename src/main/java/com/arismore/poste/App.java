@@ -25,7 +25,7 @@ public class App {
         
         try {
 			Unmarshaller unmarshaller = jc.createUnmarshaller();
-			ParcelData parcelData = (ParcelData) unmarshaller.unmarshal(new File("/home/mehdi/laposte.xml"));
+			ParcelData parcelData = (ParcelData) unmarshaller.unmarshal(new File("/home/areva/laposte.xml"));
  
 			GsonBuilder builder = new GsonBuilder();
 			Gson gson = builder.create();
