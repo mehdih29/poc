@@ -48,7 +48,13 @@ public class QueryXML {
     for (int i=0; i<nodes1.getLength();i++){
         System.out.println(nodes1.item(i).getTextContent());
       }
-    ParcelData parcel = new ParcelData(document, xpath);
+    ParcelData parcel = null;
+	try {
+		parcel = new ParcelData(document, xpath);
+	} catch (XPathExpressionException e) {
+		// TODO Auto-generated catch block
+		e.printStackTrace();
+	}
     GsonBuilder builder1 = new GsonBuilder();
 	Gson gson = builder1.create();
 	System.out.println(gson.toJson(parcel));
