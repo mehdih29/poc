@@ -34,108 +34,108 @@ public class TraitementMachine extends Traitement{
 	
 	
 
-	public TraitementMachine(Integer i, Document document, XPath xpath) {
+	public TraitementMachine(int index, Integer i, Document document, XPath xpath) {
 		try {
 			this.debutTraitement = (String) xpath.compile(
-					"/a:feed/a:entry/a:content/:div/:ul[@class='traitement']/:li["+ i.toString()+ "]/:span[@class='dateDebut']/text()").evaluate(
+					"/a:feed/a:entry[" + index + "]/a:content/:div/:ul[@class='traitement']/:li["+ i.toString()+ "]/:span[@class='dateDebut']/text()").evaluate(
 					document, XPathConstants.STRING);
 			this.idPlateforme = (String) xpath
 					.compile(
-							"/a:feed/a:entry/a:content/:div/:ul[@class='traitement']/:li["+ i.toString()+ "]/:span[@class='idPlateforme']/text()")
+							"/a:feed/a:entry[" + index + "]/a:content/:div/:ul[@class='traitement']/:li["+ i.toString()+ "]/:span[@class='idPlateforme']/text()")
 					.evaluate(document, XPathConstants.STRING);
 			this.idMachineTri = (String) xpath
 					.compile(
-							"/a:feed/a:entry/a:content/:div/:ul[@class='traitement']/:li["+ i.toString()+ "]/:span[@class='idMachineTri']/text()")
+							"/a:feed/a:entry[" + index + "]/a:content/:div/:ul[@class='traitement']/:li["+ i.toString()+ "]/:span[@class='idMachineTri']/text()")
 					.evaluate(document, XPathConstants.STRING);
 			this.entreeMachine = (String) xpath
 					.compile(
-							"/a:feed/a:entry/a:content/:div/:ul[@class='traitement']/:li["+ i.toString()+ "]/:span[@class='entreeMachine']/text()")
+							"/a:feed/a:entry[" + index + "]/a:content/:div/:ul[@class='traitement']/:li["+ i.toString()+ "]/:span[@class='entreeMachine']/text()")
 					.evaluate(document, XPathConstants.STRING);
 			this.programmeTriTitle = (String) xpath
 					.compile(
-							"/a:feed/a:entry/a:content/:div/:ul[@class='traitement']/:li["+ i.toString()+ "]/:abbr[@class='programmeTri']/@title")
+							"/a:feed/a:entry[" + index + "]/a:content/:div/:ul[@class='traitement']/:li["+ i.toString()+ "]/:abbr[@class='programmeTri']/@title")
 					.evaluate(document, XPathConstants.STRING);
 			this.programmeTriId = (String) xpath
 					.compile(
-							"/a:feed/a:entry/a:content/:div/:ul[@class='traitement']/:li["+ i.toString()+ "]/:abbr[@class='programmeTri']/@id")
+							"/a:feed/a:entry[" + index + "]/a:content/:div/:ul[@class='traitement']/:li["+ i.toString()+ "]/:abbr[@class='programmeTri']/@id")
 					.evaluate(document, XPathConstants.STRING);
 			this.programmeTri = (String) xpath
 					.compile(
-							"/a:feed/a:entry/a:content/:div/:ul[@class='traitement']/:li["+ i.toString()+ "]/:abbr[@class='programmeTri']/text()")
+							"/a:feed/a:entry[" + index + "]/a:content/:div/:ul[@class='traitement']/:li["+ i.toString()+ "]/:abbr[@class='programmeTri']/text()")
 					.evaluate(document, XPathConstants.STRING);
 			//TODO a verifier
 			this.triSanctionPartiel = (String) xpath
 					.compile(
-							"/a:feed/a:entry/a:content/:div/:ul[@class='traitement']/:li["+ i.toString()+ "]/:dl[@class='parametresTri']/:dd/text()")
+							"/a:feed/a:entry[" + index + "]/a:content/:div/:ul[@class='traitement']/:li["+ i.toString()+ "]/:dl[@class='parametresTri']/:dd/text()")
 					.evaluate(document, XPathConstants.STRING);
 			this.etat = (String) xpath
 					.compile(
-							"/a:feed/a:entry/a:content/:div/:ul[@class='traitement']/:li["+ i.toString()+ "]/:span[@class='etat']/text()")
+							"/a:feed/a:entry[" + index + "]/a:content/:div/:ul[@class='traitement']/:li["+ i.toString()+ "]/:span[@class='etat']/text()")
 					.evaluate(document, XPathConstants.STRING);
 			this.receptacle = (String) xpath
 					.compile(
-							"/a:feed/a:entry/a:content/:div/:ul[@class='traitement']/:li["+ i.toString()+ "]/:span[@class='receptacle']/text()")
+							"/a:feed/a:entry[" + index + "]/a:content/:div/:ul[@class='traitement']/:li["+ i.toString()+ "]/:span[@class='receptacle']/text()")
 					.evaluate(document, XPathConstants.STRING);
 			this.receptacleType = (String) xpath
 					.compile(
-							"/a:feed/a:entry/a:content/:div/:ul[@class='traitement']/:li["+ i.toString()+ "]/:span[@class='receptacle']/@type")
+							"/a:feed/a:entry[" + index + "]/a:content/:div/:ul[@class='traitement']/:li["+ i.toString()+ "]/:span[@class='receptacle']/@type")
 					.evaluate(document, XPathConstants.STRING);
 			this.receptacleNiveau = (String) xpath
 					.compile(
-							"/a:feed/a:entry/a:content/:div/:ul[@class='traitement']/:li["+ i.toString()+ "]/:span[@class='receptacle']/@niveau")
+							"/a:feed/a:entry[" + index + "]/a:content/:div/:ul[@class='traitement']/:li["+ i.toString()+ "]/:span[@class='receptacle']/@niveau")
 					.evaluate(document, XPathConstants.STRING);
 			this.receptacleLang = (String) xpath
 					.compile(
-							"/a:feed/a:entry/a:content/:div/:ul[@class='traitement']/:li["+ i.toString()+ "]/:span[@class='receptacle']/@lang")
+							"/a:feed/a:entry[" + index + "]/a:content/:div/:ul[@class='traitement']/:li["+ i.toString()+ "]/:span[@class='receptacle']/@lang")
 					.evaluate(document, XPathConstants.STRING);
 			this.receptacleReel = (String) xpath
 					.compile(
-							"/a:feed/a:entry/a:content/:div/:ul[@class='traitement']/:li["+ i.toString()+ "]/:div[@class='client']/:span[@class='receptacleReel']/text()")
+							"/a:feed/a:entry[" + index + "]/a:content/:div/:ul[@class='traitement']/:li["+ i.toString()+ "]/:div[@class='client']/:span[@class='receptacleReel']/text()")
 					.evaluate(document, XPathConstants.STRING);
 			this.raisonModificationReceptacle = (String) xpath
 					.compile(
-							"/a:feed/a:entry/a:content/:div/:ul[@class='traitement']/:li["+ i.toString()+ "]/:div[@class='client']/:span[@class='raisonModificationReceptacle']/text()")
+							"/a:feed/a:entry[" + index + "]/a:content/:div/:ul[@class='traitement']/:li["+ i.toString()+ "]/:div[@class='client']/:span[@class='raisonModificationReceptacle']/text()")
 					.evaluate(document, XPathConstants.STRING);
 			this.receptacleReelNiveau = (String) xpath
 					.compile(
-							"/a:feed/a:entry/a:content/:div/:ul[@class='traitement']/:li["+ i.toString()+ "]/:div[@class='client']/:span[@class='receptacleReel']/@niveau")
+							"/a:feed/a:entry[" + index + "]/a:content/:div/:ul[@class='traitement']/:li["+ i.toString()+ "]/:div[@class='client']/:span[@class='receptacleReel']/@niveau")
 					.evaluate(document, XPathConstants.STRING);
 			this.receptacleReelTitle = (String) xpath
 					.compile(
-							"/a:feed/a:entry/a:content/:div/:ul[@class='traitement']/:li["+ i.toString()+ "]/:div[@class='client']/:span[@class='receptacleReel']/@title")
+							"/a:feed/a:entry[" + index + "]/a:content/:div/:ul[@class='traitement']/:li["+ i.toString()+ "]/:div[@class='client']/:span[@class='receptacleReel']/@title")
 					.evaluate(document, XPathConstants.STRING);
 			this.receptacleReelLang = (String) xpath
 					.compile(
-							"/a:feed/a:entry/a:content/:div/:ul[@class='traitement']/:li["+ i.toString()+ "]/:div[@class='client']/:span[@class='receptacleReel']/@lang")
+							"/a:feed/a:entry[" + index + "]/a:content/:div/:ul[@class='traitement']/:li["+ i.toString()+ "]/:div[@class='client']/:span[@class='receptacleReel']/@lang")
 					.evaluate(document, XPathConstants.STRING);
 			this.receptacleReelTitle = (String) xpath
 					.compile(
-							"/a:feed/a:entry/a:content/:div/:ul[@class='traitement']/:li["+ i.toString()+ "]/:div[@class='client']/:span[@class='receptacleReel']/@title")
+							"/a:feed/a:entry[" + index + "]/a:content/:div/:ul[@class='traitement']/:li["+ i.toString()+ "]/:div[@class='client']/:span[@class='receptacleReel']/@title")
 					.evaluate(document, XPathConstants.STRING);
 			
 			this.plateformeSuivante = (String) xpath
 					.compile(
-							"/a:feed/a:entry/a:content/:div/:ul[@class='traitement']/:li["+ i.toString()+ "]/:span[@class='plateformeSuivante']/text()")
+							"/a:feed/a:entry[" + index + "]/a:content/:div/:ul[@class='traitement']/:li["+ i.toString()+ "]/:span[@class='plateformeSuivante']/text()")
 					.evaluate(document, XPathConstants.STRING);
 			this.valeurAdressePrioritaire = (String) xpath
 					.compile(
-							"/a:feed/a:entry/a:content/:div/:ul[@class='traitement']/:li["+ i.toString()+ "]/:span[@class='valeur_adresse_prioritaire']/text()")
+							"/a:feed/a:entry[" + index + "]/a:content/:div/:ul[@class='traitement']/:li["+ i.toString()+ "]/:span[@class='valeur_adresse_prioritaire']/text()")
 					.evaluate(document, XPathConstants.STRING);
 			this.typeAdressePrioritaire = (String) xpath
 					.compile(
-							"/a:feed/a:entry/a:content/:div/:ul[@class='traitement']/:li["+ i.toString()+ "]/:span[@class='type_adresse_prioritaire']/text()")
+							"/a:feed/a:entry[" + index + "]/a:content/:div/:ul[@class='traitement']/:li["+ i.toString()+ "]/:span[@class='type_adresse_prioritaire']/text()")
 					.evaluate(document, XPathConstants.STRING);
 			this.cedex = (String) xpath
 					.compile(
-							"/a:feed/a:entry/a:content/:div/:ul[@class='traitement']/:li["+ i.toString()+ "]/:span[@class='cedex']/text()")
+							"/a:feed/a:entry[" + index + "]/a:content/:div/:ul[@class='traitement']/:li["+ i.toString()+ "]/:span[@class='cedex']/text()")
 					.evaluate(document, XPathConstants.STRING);
 			this.service = (String) xpath
 					.compile(
-							"/a:feed/a:entry/a:content/:div/:ul[@class='traitement']/:li["+ i.toString()+ "]/:span[@class='service']/text()")
+							"/a:feed/a:entry[" + index + "]/a:content/:div/:ul[@class='traitement']/:li["+ i.toString()+ "]/:span[@class='service']/text()")
 					.evaluate(document, XPathConstants.STRING);
 			this.datePublication = (String) xpath
 					.compile(
-							"/a:feed/a:entry/a:content/:div/:ul[@class='traitement']/:li["+ i.toString()+ "]/:span[@class='datePublication']/text()")
+							"/a:feed/a:entry[" + index + "]/a:content/:div/:ul[@class='traitement']/:li["+ i.toString()+ "]/:span[@class='datePublication']/text()")
 					.evaluate(document, XPathConstants.STRING);
 			
 		/*	System.out.println("debutTraitement >>>"+debutTraitement);

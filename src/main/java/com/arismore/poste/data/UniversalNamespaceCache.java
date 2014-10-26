@@ -113,7 +113,7 @@ public class UniversalNamespaceCache implements NamespaceContext {
         return uri2Prefix.get(namespaceURI);
     }
 
-    public Iterator getPrefixes(String namespaceURI) {
+    public Iterator<?> getPrefixes(String namespaceURI) {
         // Not implemented
         return null;
     }

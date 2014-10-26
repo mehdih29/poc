@@ -16,28 +16,28 @@ public class Adresse {
 	private String idRaoLivraison;
 	private String typeRaoLivraison;
 
-	public Adresse(Integer i, Document document, XPath xpath) {
+	public Adresse(int index, Integer i, Document document, XPath xpath) {
 		try {
 			this.originAdresse = (String) xpath.compile(
-							"/a:feed/a:entry/a:content/:div/:ul[@class='adresses']/:li["+ i.toString()+ "]/:span[@class='type']/text()").evaluate(
+							"/a:feed/a:entry[" + index + "]/a:content/:div/:ul[@class='adresses']/:li["+ i.toString()+ "]/:span[@class='type']/text()").evaluate(
 							document, XPathConstants.STRING);
 			this.CodeAdresse = (String) xpath.compile(
-					"/a:feed/a:entry/a:content/:div/:ul[@class='adresses']/:li["+ i.toString()+ "]/:span[@class='code']/text()").evaluate(
+					"/a:feed/a:entry[" + index + "]/a:content/:div/:ul[@class='adresses']/:li["+ i.toString()+ "]/:span[@class='code']/text()").evaluate(
 					document, XPathConstants.STRING);
 			this.codeAcheDistri = (String) xpath.compile(
-					"/a:feed/a:entry/a:content/:div/:ul[@class='adresses']/:li["+ i.toString()+ "]/:div[@class='client']/:span[@class='codeAcheDistri']/text()").evaluate(
+					"/a:feed/a:entry[" + index + "]/a:content/:div/:ul[@class='adresses']/:li["+ i.toString()+ "]/:div[@class='client']/:span[@class='codeAcheDistri']/text()").evaluate(
 					document, XPathConstants.STRING);
 			this.idRao = (String) xpath.compile(
-					"/a:feed/a:entry/a:content/:div/:ul[@class='adresses']/:li["+ i.toString()+ "]/:span[@class='idRao']/text()").evaluate(
+					"/a:feed/a:entry[" + index + "]/a:content/:div/:ul[@class='adresses']/:li["+ i.toString()+ "]/:span[@class='idRao']/text()").evaluate(
 					document, XPathConstants.STRING);
 			this.typeRao = (String) xpath.compile(
-					"/a:feed/a:entry/a:content/:div/:ul[@class='adresses']/:li["+ i.toString()+ "]/:span[@class='typeRao']/text()").evaluate(
+					"/a:feed/a:entry[" + index + "]/a:content/:div/:ul[@class='adresses']/:li["+ i.toString()+ "]/:span[@class='typeRao']/text()").evaluate(
 					document, XPathConstants.STRING);
 			this.idRaoLivraison = (String) xpath.compile(
-					"/a:feed/a:entry/a:content/:div/:ul[@class='adresses']/:li["+ i.toString()+ "]/:span[@class='idRaoLivraison']/text()").evaluate(
+					"/a:feed/a:entry[" + index + "]/a:content/:div/:ul[@class='adresses']/:li["+ i.toString()+ "]/:span[@class='idRaoLivraison']/text()").evaluate(
 					document, XPathConstants.STRING);
 			this.typeRaoLivraison = (String) xpath.compile(
-					"/a:feed/a:entry/a:content/:div/:ul[@class='adresses']/:li["+ i.toString()+ "]/:span[@class='typeRaoLivraison']/text()").evaluate(
+					"/a:feed/a:entry[" + index + "]/a:content/:div/:ul[@class='adresses']/:li["+ i.toString()+ "]/:span[@class='typeRaoLivraison']/text()").evaluate(
 					document, XPathConstants.STRING);
 		} catch (XPathExpressionException e) {
 			// TODO Auto-generated catch block
