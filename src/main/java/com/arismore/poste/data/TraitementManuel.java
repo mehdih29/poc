@@ -18,60 +18,88 @@ public class TraitementManuel extends Traitement {
 	private String status;
 	private String raisonFin;
 	private String sequenceFrappe;
+	
+	public String getId() {
+		return datePublication;
+	}
 
-	public TraitementManuel(int index, Integer i, Document document, XPath xpath) {
+	public TraitementManuel(int index, int i, Document document, XPath xpath) {
 		try {
-			this.date = (String) xpath.compile(
-					"/a:feed/a:entry[" + index + "]/a:content/:div/:ul[@class='traitementManuel']/:li["
-							+ i.toString() + "]/:span[@class='date']/text()")
+			this.date = (String) xpath
+					.compile(
+							"/a:feed/a:entry["
+									+ index
+									+ "]/a:content/:div/:ul[@class='traitementManuel']/:li["
+									+ i + "]/:span[@class='date']/text()")
 					.evaluate(document, XPathConstants.STRING);
-			this.type = (String) xpath.compile(
-					"/a:feed/a:entry[" + index + "]/a:content/:div/:ul[@class='traitementManuel']/:li["
-							+ i.toString() + "]/:span[@class='type']/text()")
+			this.type = (String) xpath
+					.compile(
+							"/a:feed/a:entry["
+									+ index
+									+ "]/a:content/:div/:ul[@class='traitementManuel']/:li["
+									+ i + "]/:span[@class='type']/text()")
 					.evaluate(document, XPathConstants.STRING);
 
-			this.etat = (String) xpath.compile(
-					"/a:feed/a:entry[" + index + "]/a:content/:div/:ul[@class='traitementManuel']/:li["
-							+ i.toString() + "]/:span[@class='etat']/text()")
+			this.etat = (String) xpath
+					.compile(
+							"/a:feed/a:entry["
+									+ index
+									+ "]/a:content/:div/:ul[@class='traitementManuel']/:li["
+									+ i + "]/:span[@class='etat']/text()")
 					.evaluate(document, XPathConstants.STRING);
-			this.status = (String) xpath.compile(
-					"/a:feed/a:entry[" + index + "]/a:content/:div/:ul[@class='traitementManuel']/:li["
-							+ i.toString() + "]/:span[@class='etat']/@title")
+			this.status = (String) xpath
+					.compile(
+							"/a:feed/a:entry["
+									+ index
+									+ "]/a:content/:div/:ul[@class='traitementManuel']/:li["
+									+ i + "]/:span[@class='etat']/@title")
 					.evaluate(document, XPathConstants.STRING);
 			this.idCentreVideocodage = (String) xpath
 					.compile(
-							"/a:feed/a:entry[" + index + "]/a:content/:div/:ul[@class='traitementManuel']/:li["
-									+ i.toString()
+							"/a:feed/a:entry["
+									+ index
+									+ "]/a:content/:div/:ul[@class='traitementManuel']/:li["
+									+ i
 									+ "]/:div[@class='client']/:span[@class='idCentreVideocodage']/text()")
 					.evaluate(document, XPathConstants.STRING);
 			this.duree = (String) xpath
 					.compile(
-							"/a:feed/a:entry[" + index + "]/a:content/:div/:ul[@class='traitementManuel']/:li["
-									+ i.toString()
+							"/a:feed/a:entry["
+									+ index
+									+ "]/a:content/:div/:ul[@class='traitementManuel']/:li["
+									+ i
 									+ "]/:div[@class='client']/:span[@class='duree']/text()")
 					.evaluate(document, XPathConstants.STRING);
 			this.nomOperateur = (String) xpath
 					.compile(
-							"/a:feed/a:entry[" + index + "]/a:content/:div/:ul[@class='traitementManuel']/:li["
-									+ i.toString()
+							"/a:feed/a:entry["
+									+ index
+									+ "]/a:content/:div/:ul[@class='traitementManuel']/:li["
+									+ i
 									+ "]/:div[@class='client']/:span[@class='nomOperateur']/text()")
 					.evaluate(document, XPathConstants.STRING);
 			this.datePublication = (String) xpath
 					.compile(
-							"/a:feed/a:entry[" + index + "]/a:content/:div/:ul[@class='traitementManuel']/:li["
-									+ i.toString()
+							"/a:feed/a:entry["
+									+ index
+									+ "]/a:content/:div/:ul[@class='traitementManuel']/:li["
+									+ i
 									+ "]/:div[@class='client']/:span[@class='datePublication']/text()")
 					.evaluate(document, XPathConstants.STRING);
 			this.sequenceFrappe = (String) xpath
 					.compile(
-							"/a:feed/a:entry[" + index + "]/a:content/:div/:ul[@class='traitementManuel']/:li["
-									+ i.toString()
+							"/a:feed/a:entry["
+									+ index
+									+ "]/a:content/:div/:ul[@class='traitementManuel']/:li["
+									+ i
 									+ "]/:div[@class='client']/:span[@class='sequenceFrappe']/text()")
 					.evaluate(document, XPathConstants.STRING);
 			this.raisonFin = (String) xpath
 					.compile(
-							"/a:feed/a:entry[" + index + "]/a:content/:div/:ul[@class='traitementManuel']/:li["
-									+ i.toString()
+							"/a:feed/a:entry["
+									+ index
+									+ "]/a:content/:div/:ul[@class='traitementManuel']/:li["
+									+ i
 									+ "]/:div[@class='client']/:span[@class='raisonFin']/text()")
 					.evaluate(document, XPathConstants.STRING);
 

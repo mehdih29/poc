@@ -19,8 +19,8 @@ public class ParcelData implements Cloneable {
 	private String priorite;
 	private String etat;
 	private String plateformTri;
-	private String envoloppe_expire;
-	private String cle_externe;
+	private String envoloppeExpire;
+	private String cleExterne;
 	private String updated;
 	private String published;
 	private ArrayList<Adresse> adresses;
@@ -60,12 +60,12 @@ public class ParcelData implements Cloneable {
 				"/a:feed/a:entry[" + index + "]/a:author/a:name/text()")
 				.evaluate(document, XPathConstants.STRING);
 
-		this.envoloppe_expire = (String) xpath.compile(
+		this.envoloppeExpire = (String) xpath.compile(
 				"/a:feed/a:entry[" + index
 						+ "]/a:title/:div/:div[@class='expires']/text()")
 				.evaluate(document, XPathConstants.STRING);
 
-		this.cle_externe = (String) xpath
+		this.cleExterne = (String) xpath
 				.compile(
 						"/a:feed/a:entry["
 								+ index
@@ -129,6 +129,14 @@ public class ParcelData implements Cloneable {
 
 	public void setTraitement(Traitement traitement) {
 		this.traitement = traitement;
+	}
+	
+	public String getIsie() {
+		return isie;
+	}
+
+	public void setIsie(String isie) {
+		this.isie = isie;
 	}
 
 	public Object clone() throws CloneNotSupportedException {

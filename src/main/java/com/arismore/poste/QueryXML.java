@@ -32,7 +32,7 @@ public class QueryXML {
 
 		// load the Document
 		Document document = builder.parse(new FileInputStream(
-				"/home/areva/POC/out"));
+				"/home/mehdi/POC/out2"));
 
 		xpath.setNamespaceContext(new UniversalNamespaceCache(document, true));
 
