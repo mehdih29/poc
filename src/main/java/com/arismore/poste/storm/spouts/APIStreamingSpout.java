@@ -1,4 +1,4 @@
-package com.arismore.poste.storm;
+package com.arismore.poste.storm.spouts;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -24,14 +24,18 @@ import backtype.storm.tuple.Fields;
 import backtype.storm.tuple.Values;
 
 public class APIStreamingSpout extends BaseRichSpout {
-	static String STREAMING_API_URL = "http://national.cpn.prd.sie.courrier.intra.laposte.fr/National/enveloppes/v1/externe?dateDebut=2010-11-08T08:00:00Z&dateFin=2010-11-08T08:01:00Z&startIndex=1&count=100";
+	static String STREAMING_API_URL = "http://national.cpn.prd.sie.courrier.intra.laposte.fr/National/enveloppes/v1/externe?";
+	static private String SEP = "&";
+	static private String dateDebut = "dateDebut=";
+	static private String dateFin = "dateFin=";
+	static private String startIndex = "startIndex=";
+	static private String count = "count=";// 2010-11-08T08:00:00Z&dateFin=2010-11-08T08:01:00Z&startIndex=1&count=1";
 	private String track;
 	private HttpClient client;
 	private SpoutOutputCollector collector;
 	LinkedBlockingQueue<String> tweets = new LinkedBlockingQueue<String>();
 	static Logger LOG = Logger.getLogger(APIStreamingSpout.class);
 	static JSONParser jsonParser = new JSONParser();
-
 
 	public void nextTuple() {
 		/*
@@ -70,7 +74,6 @@ public class APIStreamingSpout extends BaseRichSpout {
 		}
 	}
 
-	
 	public void open(Map conf, TopologyContext context,
 			SpoutOutputCollector collector) {
 		int spoutsSize = context

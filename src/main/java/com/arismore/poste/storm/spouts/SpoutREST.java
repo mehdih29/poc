@@ -1,4 +1,4 @@
-package com.arismore.poste.storm;
+package com.arismore.poste.storm.spouts;
 
 import backtype.storm.Config;
 import backtype.storm.topology.OutputFieldsDeclarer;
@@ -24,18 +24,18 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 
-public class XMLSoput extends BaseRichSpout {
+public class SpoutREST extends BaseRichSpout {
    public static Logger LOG = LoggerFactory.getLogger(XMLSoput.class);
    boolean _isDistributed;
    SpoutOutputCollector _collector;
    private static final String FILE_LOCATION = "/tmp/myfile";
    private static BufferedReader buffer;
    
-   public XMLSoput() {
+   public SpoutREST() {
        this(true);
    }
 
-   public XMLSoput(boolean isDistributed) {
+   public SpoutREST(boolean isDistributed) {
        _isDistributed = isDistributed;
    }
        
