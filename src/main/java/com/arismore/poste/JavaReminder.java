@@ -1,6 +1,7 @@
 package com.arismore.poste;
 
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.Timer;
 import java.util.TimerTask;
@@ -13,7 +14,9 @@ public class JavaReminder {
         timer.schedule(new RemindTask(), seconds*1000, 60*1000); //delay in milliseconds
     }
 
-    class RemindTask extends TimerTask {
+    static class RemindTask extends TimerTask {
+    	
+    	private static ArrayList<Date> dates = null;
 
         @Override
         public void run() {
@@ -22,6 +25,9 @@ public class JavaReminder {
             SimpleDateFormat formater = null;
             formater = new SimpleDateFormat("yyyy-MM-dd'T'hh:mm':00Z'");
             System.out.println(formater.format(new Date()));
+            RemindTask.dates.add(new Date());
+            
+            
             //return new Date();
             //System.out.println(new java.util.Date().getTime());
             //System.exit(0); //Stops the AWT thread (and everything else)

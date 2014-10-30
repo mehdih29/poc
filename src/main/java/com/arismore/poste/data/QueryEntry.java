@@ -30,7 +30,7 @@ public class QueryEntry {
 			ParcelData parcel = new ParcelData(index, document, xpath);
 			ParcelData clone = null;
 
-			BulkRequestBuilder bulkRequest = instance.getClient().prepareBulk();
+			//BulkRequestBuilder bulkRequest = instance.getClient().prepareBulk();
 
 			NodeList traitement = (NodeList) xpath.compile(
 					"/a:feed/a:entry[" + index
@@ -45,17 +45,15 @@ public class QueryEntry {
 					System.out.println(instance.getGson().toJson(clone));
 					// writer.println(gson.toJson(clone));
 
-					bulkRequest.add(instance
+				/*	bulkRequest.add(instance
 							.getClient()
 							.prepareIndex(
 									"parceldata",
 									"traitement",
 									clone.getIsie() + "|"
 											+ clone.getTraitement().getId())
-							.setSource(instance.getGson().toJson(clone)));
+							.setSource(instance.getGson().toJson(clone)));*/
 
-					// new ParcelData(document, xpath, new TraitementMachine(i,
-					// document, xpath)));
 				}
 			}
 			NodeList traitementManuel = (NodeList) xpath
@@ -71,23 +69,23 @@ public class QueryEntry {
 							document, xpath));
 					this.parcels.add(clone);
 
-					bulkRequest.add(instance
+				/*	bulkRequest.add(instance
 							.getClient()
 							.prepareIndex(
 									"parceldata",
 									"traitement",
 									clone.getIsie() + "|"
 											+ clone.getTraitement().getId())
-							.setSource(instance.getGson().toJson(clone)));
+							.setSource(instance.getGson().toJson(clone)));*/
 				}
 			}
 
-			BulkResponse bulkResponse = bulkRequest.execute().actionGet();
+			/*BulkResponse bulkResponse = bulkRequest.execute().actionGet();
 
 			if (bulkResponse.hasFailures()) {
 				System.out.println("bulk failures");
 				System.out.println(bulkResponse.getItems().toString());
-			}
+			}*/
 
 			System.out.println("parcels traitement size");
 			System.out.println(this.parcels.size());
