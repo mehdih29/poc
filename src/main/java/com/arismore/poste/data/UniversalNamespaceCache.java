@@ -1,11 +1,14 @@
 package com.arismore.poste.data;
 
+import java.io.InputStream;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 
 import javax.xml.XMLConstants;
 import javax.xml.namespace.NamespaceContext;
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
 
 import org.w3c.dom.Attr;
 import org.w3c.dom.Document;
@@ -117,5 +120,27 @@ public class UniversalNamespaceCache implements NamespaceContext {
         // Not implemented
         return null;
     }
+    
+   /* public static Document loadXMLAsDom(InputStream inputStream) {
+    	DocumentBuilderFactory documentBuilderFactory = DocumentBuilderFactory.newInstance();
+    	documentBuilderFactory.setNamespaceAware(true);
+    	DocumentBuilder documentBuilder = null;
+    	Document document = null;
+    	try{
+    		documentBuilder  = documentBuilderFactory.newDocumentBuilder();
+    		document = documentBuilder.parse(new InputSource(inputStream)); //use InputSource here to get better support for encodings
+    		inputStream.close();
+    	}
+    	catch (ParserConfigurationException e){
+    		System.out.println("loadXMLAsDom got a ParserConfigurationException! "); e.printStackTrace;
+    	}
+    	catch (IOException e){
+    		System.out.println("loadXMLAsDom got a IOException! "); e.printStackTrace;
+    	}
+    	catch (SAXException e){
+    		System.out.println("loadXMLAsDom got a SAXException! "); e.printStackTrace;
+    	}		
+    	return document;
+    }*/
 
 }

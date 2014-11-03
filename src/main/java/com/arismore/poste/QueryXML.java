@@ -36,6 +36,15 @@ public class QueryXML {
 
 		xpath.setNamespaceContext(new UniversalNamespaceCache(document, true));
 
+		int number = Integer.parseInt((String) xpath.compile("/a:feed/openSearch:totalResults").evaluate(document, XPathConstants.STRING));
+		
+		number = (number / 1000) + 1;
+		
+		System.out.println(number);
+		
+		if ( number != 0){
+			return;		
+		}
 		
 		NodeList entries = (NodeList) xpath.compile("/a:feed/a:entry")
 				.evaluate(document, XPathConstants.NODESET);
