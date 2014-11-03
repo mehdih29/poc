@@ -24,18 +24,18 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 
-public class XMLSoput extends BaseRichSpout {
-   public static Logger LOG = LoggerFactory.getLogger(XMLSoput.class);
+public class XMLSpout extends BaseRichSpout {
+   public static Logger LOG = LoggerFactory.getLogger(XMLSpout.class);
    boolean _isDistributed;
    SpoutOutputCollector _collector;
    private static final String FILE_LOCATION = "/tmp/myfile";
    private static BufferedReader buffer;
    
-   public XMLSoput() {
+   public XMLSpout() {
        this(true);
    }
 
-   public XMLSoput(boolean isDistributed) {
+   public XMLSpout(boolean isDistributed) {
        _isDistributed = isDistributed;
    }
        

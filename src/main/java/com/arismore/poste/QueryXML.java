@@ -35,16 +35,6 @@ public class QueryXML {
 				"/home/mehdi/POC/out2"));
 
 		xpath.setNamespaceContext(new UniversalNamespaceCache(document, true));
-
-		int number = Integer.parseInt((String) xpath.compile("/a:feed/openSearch:totalResults").evaluate(document, XPathConstants.STRING));
-		
-		number = (number / 1000) + 1;
-		
-		System.out.println(number);
-		
-		if ( number != 0){
-			return;		
-		}
 		
 		NodeList entries = (NodeList) xpath.compile("/a:feed/a:entry")
 				.evaluate(document, XPathConstants.NODESET);
@@ -53,14 +43,6 @@ public class QueryXML {
 		if (entries.getLength() > 0) {
 			for (int i = 1; i <= entries.getLength(); i++) {
 				 entry = new QueryEntry(document, i, xpath);
-				
-				// new ParcelData(document, xpath, new TraitementMachine(i,
-				// document, xpath)));
-				 
-					//TODO leave this close
-					if(i == 100){
-						break;
-					}
 			}
 		}
 

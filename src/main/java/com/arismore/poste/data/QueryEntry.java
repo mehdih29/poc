@@ -107,4 +107,11 @@ public class QueryEntry {
 		}
 	}
 
+	public Singleton getInstance() {
+		return instance;
+	}
+
+	public ArrayList<ParcelData> getParcels() {
+		return parcels;
+	}
 }

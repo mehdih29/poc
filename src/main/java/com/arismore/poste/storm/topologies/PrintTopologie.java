@@ -30,7 +30,7 @@ public class PrintTopologie {
 		public void execute(Tuple tuple, BasicOutputCollector collector) {
 			Date date = (Date) tuple.getValue(0);
 			SimpleDateFormat formater = null;
-			formater = new SimpleDateFormat("yyyy-MM-dd'T'hh:mm:ss'Z'");
+			formater = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'");
 			System.out.println("here is the output");
 			System.out.println(formater.format(date));
 			try {
@@ -56,18 +56,17 @@ public class PrintTopologie {
 		TopologyBuilder builder = new TopologyBuilder();
 
 		builder.setSpout("word", new TickTimerSpout(), 1);
-		// builder.setBolt("print", new PrinterBolt(),
-		// 3).shuffleGrouping("word");
+
 		builder.setBolt("jobStarter", new JobStarterBolt(), 3).shuffleGrouping(
 				"word");
-		builder.setBolt("tofile", new WriteToFileBolt(), 6).shuffleGrouping(
+		builder.setBolt("tofile", new WriteToFileBolt(), 8).shuffleGrouping(
 				"jobStarter");
 
 		Config conf = new Config();
 		conf.setDebug(true);
 
 		if (args != null && args.length > 0) {
-			conf.setNumWorkers(2);
+			conf.setNumWorkers(4);
 
 			StormSubmitter.submitTopologyWithProgressBar(args[0], conf,
 					builder.createTopology());

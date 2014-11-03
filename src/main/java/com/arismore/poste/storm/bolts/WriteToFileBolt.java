@@ -59,12 +59,12 @@ public class WriteToFileBolt extends BaseRichBolt {
 
 				PrintWriter writer = new PrintWriter("/dev/shm/_file_" + url,
 						"UTF-8");
-				writer.write(url);
+				writer.println(url);
 
 				// Read line by line
 				while ((in = reader.readLine()) != null) {
 
-					writer.write(in);
+					writer.println(in);
 
 				}
 
