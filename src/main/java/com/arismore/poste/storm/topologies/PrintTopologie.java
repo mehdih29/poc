@@ -57,16 +57,16 @@ public class PrintTopologie {
 
 		builder.setSpout("word", new TickTimerSpout(), 1);
 
-		builder.setBolt("jobStarter", new JobStarterBolt(), 3).shuffleGrouping(
+		builder.setBolt("jobStarter", new JobStarterBolt(), 5).shuffleGrouping(
 				"word");
-		builder.setBolt("tofile", new WriteToFileBolt(), 8).shuffleGrouping(
+		builder.setBolt("tofile", new WriteToFileBolt(), 10).shuffleGrouping(
 				"jobStarter");
 
 		Config conf = new Config();
 		conf.setDebug(true);
 
 		if (args != null && args.length > 0) {
-			conf.setNumWorkers(4);
+			conf.setNumWorkers(6);
 
 			StormSubmitter.submitTopologyWithProgressBar(args[0], conf,
 					builder.createTopology());

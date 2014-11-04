@@ -28,7 +28,7 @@ public class JsonToESBolt extends BaseRichBolt {
 		QueryEntry entry = (QueryEntry) tuple.getValue(0);
 		for (int j = 0; j < entry.getParcels().size(); j++) {
 
-			bulkRequest.add(instance
+			/*bulkRequest.add(instance
 					.getClient()
 					.prepareIndex(
 							"parceldata",
@@ -39,13 +39,14 @@ public class JsonToESBolt extends BaseRichBolt {
 											.getId())
 					.setSource(
 							instance.getGson()
-									.toJson(entry.getParcels().get(j))));
+									.toJson(entry.getParcels().get(j))));*/
 		}
+		
 	}
 
 	public void prepare(Map stormConf, TopologyContext context,
 			OutputCollector collector) {
 		this.instance = Singleton.getInstance();
-		this.bulkRequest = instance.getClient().prepareBulk();
+		//this.bulkRequest = instance.getClient().prepareBulk();
 	}
 }

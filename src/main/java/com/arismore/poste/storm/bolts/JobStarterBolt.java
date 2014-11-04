@@ -54,7 +54,7 @@ public class JobStarterBolt extends BaseRichBolt {
 	private static int STEP = 1000;
 	static Logger LOG = Logger.getLogger(JobStarterBolt.class);
 	private SimpleDateFormat formater = null;
-	private static String FILE_RECOVERY_WINDOWS = "/dev/shm/_file_recovery_window";
+	private static String FILE_RECOVERY_WINDOWS = "/home/sysinstall/POC/_file_recovery_window";
 	Calendar cal = null;
 	XPath xpath = null;
 	DocumentBuilder builder;
@@ -76,7 +76,9 @@ public class JobStarterBolt extends BaseRichBolt {
 		cal.add(Calendar.MINUTE, -5);
 		Date end = cal.getTime();
 
-		HttpGet get = new HttpGet("http://10.192.6.7:8000/out2");
+		HttpGet get = new HttpGet(STREAMING_API_URL + BEGINDATE
+				+ formater.format(start) + SEP + ENDDATE + formater.format(end)
+				+ SEP + STARTINDEX + "1" + SEP + COUNT + "1");
 		HttpResponse response;
 
 		// Execute
@@ -90,8 +92,8 @@ public class JobStarterBolt extends BaseRichBolt {
 
 				// TODO remove this lines for the write in the files
 
-				PrintWriter writer = new PrintWriter("/dev/shm/_file_"
-						+ formater.format(date), "UTF-8");
+				// PrintWriter writer = new PrintWriter("/dev/shm/_file_" +
+				// formater.format(date), "UTF-8");
 
 				InputStream inputStream = response.getEntity().getContent();
 
@@ -101,18 +103,17 @@ public class JobStarterBolt extends BaseRichBolt {
 				int number = Integer.parseInt((String) xpath.compile(
 						"/a:feed/openSearch:totalResults").evaluate(doc,
 						XPathConstants.STRING));
-				writer.println(number);
-				for (int i = 0; i < number; i += STEP) {
-					url = STREAMING_API_URL + BEGINDATE
-							+ formater.format(start) + SEP + ENDDATE
+				// writer.println(number);
+				for (int i = 1; i < number; i += STEP) {
+					url = BEGINDATE + formater.format(start) + SEP + ENDDATE
 							+ formater.format(end) + SEP + STARTINDEX + i + SEP
 							+ COUNT + STEP;
 					collector.emit(new Values(url));
 
-					writer.println(url);
+					// writer.println(url);
 				}
 				collector.ack(tuple);
-				writer.close();
+				// writer.close();
 			} else {
 				try {
 					PrintWriter out = new PrintWriter(new FileWriter(
@@ -160,8 +161,9 @@ public class JobStarterBolt extends BaseRichBolt {
 			OutputCollector collector) {
 		this.collector = collector;
 		this.formater = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm':00Z'");
+		this.formater.setTimeZone(TimeZone.getTimeZone("UTC"));
 		client = HttpClientBuilder.create().build();
-		cal = Calendar.getInstance(TimeZone.getTimeZone("UTC"));
+		cal = Calendar.getInstance();
 		xpath = XPathFactory.newInstance().newXPath();
 		DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
 		factory = DocumentBuilderFactory.newInstance();

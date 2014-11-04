@@ -1,8 +1,11 @@
 package com.arismore.poste;
 
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
+import java.util.TimeZone;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -28,17 +31,43 @@ public class JavaReminder {
             RemindTask.dates.add(new Date());
             
             
+            
+            
             //return new Date();
             //System.out.println(new java.util.Date().getTime());
             //System.exit(0); //Stops the AWT thread (and everything else)
         }
     }
 
-    public static void main(String args[]) {
+    public static void main(String args[]) throws ParseException {
         System.out.println("Java timer is about to start");
         //while (true){
-        JavaReminder reminderBeep = new JavaReminder(5);
+        //JavaReminder reminderBeep = new JavaReminder(5);
         //}
         //System.out.println("Remindertask is scheduled with Java timer.");
+        
+        
+        Date date = new Date();
+        
+        SimpleDateFormat formatUTC = new SimpleDateFormat("yyyy-MMM-dd HH:mm:ssZ");
+
+        formatUTC.setTimeZone(TimeZone.getTimeZone("UTC"));
+
+        String d = formatUTC.format(date);
+        
+        System.out.println(d);
+        
+        /*formatUTC.setTimeZone(TimeZone.getTimeZone("UTC"));
+        
+        Date date = formatUTC.parse(d);
+        
+        System.out.println(date);
+        
+        Calendar cal = Calendar.getInstance(TimeZone.getTimeZone("UTC"));
+        cal.setTime(date);
+        
+        System.out.println(cal.getTime());*/
+        
+        
     }
 }

@@ -25,7 +25,7 @@ import org.slf4j.LoggerFactory;
 
 
 public class SpoutREST extends BaseRichSpout {
-   public static Logger LOG = LoggerFactory.getLogger(XMLSoput.class);
+   public static Logger LOG = LoggerFactory.getLogger(SpoutREST.class);
    boolean _isDistributed;
    SpoutOutputCollector _collector;
    private static final String FILE_LOCATION = "/tmp/myfile";

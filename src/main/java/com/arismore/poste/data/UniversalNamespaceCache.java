@@ -32,11 +32,11 @@ public class UniversalNamespaceCache implements NamespaceContext {
      */
     public UniversalNamespaceCache(Document document, boolean toplevelOnly) {
         examineNode(document.getFirstChild(), toplevelOnly);
-        System.out.println("The list of the cached namespaces:");
+        /*System.out.println("The list of the cached namespaces:");
         for (String key : prefix2Uri.keySet()) {
             System.out
                     .println("prefix " + key + ": uri " + prefix2Uri.get(key));
-        }
+        }*/
     }
 
     /**
@@ -120,27 +120,4 @@ public class UniversalNamespaceCache implements NamespaceContext {
         // Not implemented
         return null;
     }
-    
-   /* public static Document loadXMLAsDom(InputStream inputStream) {
-    	DocumentBuilderFactory documentBuilderFactory = DocumentBuilderFactory.newInstance();
-    	documentBuilderFactory.setNamespaceAware(true);
-    	DocumentBuilder documentBuilder = null;
-    	Document document = null;
-    	try{
-    		documentBuilder  = documentBuilderFactory.newDocumentBuilder();
-    		document = documentBuilder.parse(new InputSource(inputStream)); //use InputSource here to get better support for encodings
-    		inputStream.close();
-    	}
-    	catch (ParserConfigurationException e){
-    		System.out.println("loadXMLAsDom got a ParserConfigurationException! "); e.printStackTrace;
-    	}
-    	catch (IOException e){
-    		System.out.println("loadXMLAsDom got a IOException! "); e.printStackTrace;
-    	}
-    	catch (SAXException e){
-    		System.out.println("loadXMLAsDom got a SAXException! "); e.printStackTrace;
-    	}		
-    	return document;
-    }*/
-
 }
