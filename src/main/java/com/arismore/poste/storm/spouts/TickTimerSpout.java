@@ -1,8 +1,11 @@
 package com.arismore.poste.storm.spouts;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.Map;
+import java.util.TimeZone;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -24,8 +27,10 @@ public class TickTimerSpout extends BaseRichSpout {
 	public static Logger LOG = LoggerFactory.getLogger(TickTimerSpout.class);
 	boolean _isDistributed;
 	SpoutOutputCollector _collector;
-	private static ArrayList<Date> dates = null;
+	private static ArrayList<String> slidingWindow = null;
 	private static Timer timer = null;
+	private static SimpleDateFormat formater = null;
+	private static Calendar cal = null;
 
 	public TickTimerSpout() {
 		this(true);
@@ -38,7 +43,13 @@ public class TickTimerSpout extends BaseRichSpout {
 	public void open(Map conf, TopologyContext context,
 			SpoutOutputCollector collector) {
 		_collector = collector;
-		dates = new ArrayList<Date>();
+		// TODO see if i have to put this things here
+
+		TickTimerSpout.formater = new SimpleDateFormat(
+				"yyyy-MM-dd'T'HH:mm':00Z'");
+		TickTimerSpout.formater.setTimeZone(TimeZone.getTimeZone("UTC"));
+		TickTimerSpout.cal = Calendar.getInstance();
+		slidingWindow = new ArrayList<String>();
 		timer = new Timer(); // At this line a new Thread will be created
 		timer.schedule(new RemindTask(), 0, 60 * 1000); // delay in milliseconds
 	}
@@ -48,10 +59,10 @@ public class TickTimerSpout extends BaseRichSpout {
 	}
 
 	public void nextTuple() {
-		if (TickTimerSpout.dates.isEmpty()) {
+		if (TickTimerSpout.slidingWindow.isEmpty()) {
 			Utils.sleep(1000);
 		} else {
-			_collector.emit(new Values(TickTimerSpout.dates.remove(0)));
+			_collector.emit(new Values(TickTimerSpout.slidingWindow.remove(0)));
 		}
 	}
 
@@ -64,7 +75,7 @@ public class TickTimerSpout extends BaseRichSpout {
 	}
 
 	public void declareOutputFields(OutputFieldsDeclarer declarer) {
-		declarer.declare(new Fields("date"));
+		declarer.declare(new Fields("slidingWindow"));
 	}
 
 	@Override
@@ -82,10 +93,25 @@ public class TickTimerSpout extends BaseRichSpout {
 	}
 
 	static class RemindTask extends TimerTask {
+		private static String BEGINDATE = "dateDebut=";
+		private static String ENDDATE = "dateFin=";
+		private static String SEP = "&";
 
 		@Override
 		public void run() {
-			TickTimerSpout.dates.add(new Date());
+
+			Date date = new Date();
+
+			cal.setTime(date);
+			cal.add(Calendar.MINUTE, -6);
+			Date start = cal.getTime();
+
+			cal.setTime(date);
+			cal.add(Calendar.MINUTE, -5);
+			Date end = cal.getTime();
+			TickTimerSpout.slidingWindow.add(BEGINDATE
+					+ TickTimerSpout.formater.format(start) + SEP + ENDDATE
+					+ TickTimerSpout.formater.format(end));
 
 		}
 	}

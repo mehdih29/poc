@@ -6,11 +6,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.PrintWriter;
 import java.io.UnsupportedEncodingException;
-import java.text.SimpleDateFormat;
-import java.util.Calendar;
-import java.util.Date;
 import java.util.Map;
-import java.util.TimeZone;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -45,17 +41,13 @@ public class JobStarterBolt extends BaseRichBolt {
 	private static final long serialVersionUID = 111111L;
 	static String STREAMING_API_URL = "http://national.cpn.prd.sie.courrier.intra.laposte.fr/National/enveloppes/v1/externe?";
 	private static String SEP = "&";
-	private static String BEGINDATE = "dateDebut=";
-	private static String ENDDATE = "dateFin=";
 	private static String STARTINDEX = "startIndex=";
 	private static String COUNT = "count=";
 	private HttpClient client;
 	private OutputCollector collector;
 	private static int STEP = 1000;
 	static Logger LOG = Logger.getLogger(JobStarterBolt.class);
-	private SimpleDateFormat formater = null;
 	private static String FILE_RECOVERY_WINDOWS = "/home/sysinstall/POC/_file_recovery_window";
-	Calendar cal = null;
 	XPath xpath = null;
 	DocumentBuilder builder;
 
@@ -66,19 +58,10 @@ public class JobStarterBolt extends BaseRichBolt {
 	public void execute(Tuple tuple) {
 		// TODO Auto-generated method stub
 
-		Date date = (Date) tuple.getValue(0);
+		String slidingWindow = (String) tuple.getValue(0);
 
-		cal.setTime(date);
-		cal.add(Calendar.MINUTE, -6);
-		Date start = cal.getTime();
-
-		cal.setTime(date);
-		cal.add(Calendar.MINUTE, -5);
-		Date end = cal.getTime();
-
-		HttpGet get = new HttpGet(STREAMING_API_URL + BEGINDATE
-				+ formater.format(start) + SEP + ENDDATE + formater.format(end)
-				+ SEP + STARTINDEX + "1" + SEP + COUNT + "1");
+		HttpGet get = new HttpGet(STREAMING_API_URL + slidingWindow + SEP
+				+ STARTINDEX + "1" + SEP + COUNT + "1");
 		HttpResponse response;
 
 		// Execute
@@ -105,9 +88,8 @@ public class JobStarterBolt extends BaseRichBolt {
 						XPathConstants.STRING));
 				// writer.println(number);
 				for (int i = 1; i < number; i += STEP) {
-					url = BEGINDATE + formater.format(start) + SEP + ENDDATE
-							+ formater.format(end) + SEP + STARTINDEX + i + SEP
-							+ COUNT + STEP;
+					url = slidingWindow + SEP + STARTINDEX + i + SEP + COUNT
+							+ STEP;
 					collector.emit(new Values(url));
 
 					// writer.println(url);
@@ -118,10 +100,8 @@ public class JobStarterBolt extends BaseRichBolt {
 				try {
 					PrintWriter out = new PrintWriter(new FileWriter(
 							FILE_RECOVERY_WINDOWS, true));
-					out.println(STREAMING_API_URL + BEGINDATE
-							+ formater.format(start) + SEP + ENDDATE
-							+ formater.format(end) + SEP + STARTINDEX + "1"
-							+ SEP + COUNT + "1");
+					out.println(STREAMING_API_URL + slidingWindow + SEP
+							+ STARTINDEX + "1" + SEP + COUNT + "1");
 					out.close();
 				} catch (IOException e) {
 					e.printStackTrace();
@@ -140,10 +120,8 @@ public class JobStarterBolt extends BaseRichBolt {
 			try {
 				PrintWriter out = new PrintWriter(new FileWriter(
 						FILE_RECOVERY_WINDOWS, true));
-				out.println(STREAMING_API_URL + BEGINDATE
-						+ formater.format(start) + SEP + ENDDATE
-						+ formater.format(end) + SEP + STARTINDEX + "1" + SEP
-						+ COUNT + "1");
+				out.println(STREAMING_API_URL + slidingWindow + SEP
+						+ STARTINDEX + "1" + SEP + COUNT + "1");
 				out.close();
 			} catch (IOException a) {
 				a.printStackTrace();
@@ -160,10 +138,7 @@ public class JobStarterBolt extends BaseRichBolt {
 	public void prepare(Map stormConf, TopologyContext context,
 			OutputCollector collector) {
 		this.collector = collector;
-		this.formater = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm':00Z'");
-		this.formater.setTimeZone(TimeZone.getTimeZone("UTC"));
 		client = HttpClientBuilder.create().build();
-		cal = Calendar.getInstance();
 		xpath = XPathFactory.newInstance().newXPath();
 		DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
 		factory = DocumentBuilderFactory.newInstance();

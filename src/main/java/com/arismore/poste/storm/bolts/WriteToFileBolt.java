@@ -8,10 +8,7 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.io.UnsupportedEncodingException;
-import java.text.SimpleDateFormat;
-import java.util.Date;
 import java.util.Map;
-import java.util.TimeZone;
 
 import org.apache.http.HttpResponse;
 import org.apache.http.StatusLine;
@@ -34,7 +31,6 @@ public class WriteToFileBolt extends BaseRichBolt {
 	private HttpClient client;
 	private OutputCollector collector;
 	static Logger LOG = Logger.getLogger(WriteToFileBolt.class);
-	private SimpleDateFormat formater = null;
 	private static String FILE_RECOVERY_SLIDING_WINDOWS = "/home/sysinstall/POC/_file_recovery_sliding_window";
 
 	public void declareOutputFields(OutputFieldsDeclarer declarer) {
@@ -61,8 +57,8 @@ public class WriteToFileBolt extends BaseRichBolt {
 						new InputStreamReader(inputStream));
 				String in;
 
-				PrintWriter writer = new PrintWriter(
-						"/svdb/POC/_file_" + url, "UTF-8");
+				PrintWriter writer = new PrintWriter("/svdb/POC/_file_" + url,
+						"UTF-8");
 				// writer.println(url);
 
 				// Read line by line
@@ -109,7 +105,5 @@ public class WriteToFileBolt extends BaseRichBolt {
 			OutputCollector collector) {
 		this.collector = collector;
 		client = HttpClientBuilder.create().build();
-		this.formater = new SimpleDateFormat("yyyy-MMM-dd HH:mm:ssZ");
-		this.formater.setTimeZone(TimeZone.getTimeZone("UTC"));
 	}
 }
