@@ -8,6 +8,7 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.io.UnsupportedEncodingException;
+import java.util.Date;
 import java.util.Map;
 
 import org.apache.http.HttpResponse;
@@ -21,7 +22,6 @@ import backtype.storm.task.OutputCollector;
 import backtype.storm.task.TopologyContext;
 import backtype.storm.topology.OutputFieldsDeclarer;
 import backtype.storm.topology.base.BaseRichBolt;
-import backtype.storm.tuple.Fields;
 import backtype.storm.tuple.Tuple;
 
 public class WriteToFileBolt extends BaseRichBolt {
@@ -31,18 +31,24 @@ public class WriteToFileBolt extends BaseRichBolt {
 	private HttpClient client;
 	private OutputCollector collector;
 	static Logger LOG = Logger.getLogger(WriteToFileBolt.class);
-	private static String FILE_RECOVERY_SLIDING_WINDOWS = "/home/sysinstall/POC/_file_recovery_sliding_window";
+	private static String FILE_RECOVERY_SLIDING_WINDOWS = "/svdb/POC/_file_recovery_sliding_window";
+
+	// private static String FILE_RECOVERY_SLIDING_WINDOWS =
+	// "/dev/shm/_file_recovery_sliding_window";
 
 	public void declareOutputFields(OutputFieldsDeclarer declarer) {
-		declarer.declare(new Fields("url"));
 	}
 
 	public void execute(Tuple tuple) {
-		// TODO Auto-generated method stub
 
 		String url = (String) tuple.getValue(0);
 
+		LOG.error("processing " + url);
+		Long currentTimestamp = (new Date()).getTime();
+		LOG.error("currentTimestamp " + currentTimestamp);
+		// HttpGet get = new HttpGet("http://www.google.com");
 		HttpGet get = new HttpGet(STREAMING_API_URL + url);
+
 		HttpResponse response;
 
 		// Execute
@@ -59,17 +65,21 @@ public class WriteToFileBolt extends BaseRichBolt {
 
 				PrintWriter writer = new PrintWriter("/svdb/POC/_file_" + url,
 						"UTF-8");
+				// PrintWriter writer = new PrintWriter("/dev/shm/_file_" + url,
+				// "UTF-8");
 				// writer.println(url);
-
+				
 				// Read line by line
 				while ((in = reader.readLine()) != null) {
 
 					writer.println(in);
 
 				}
-
-				collector.ack(tuple);
 				writer.close();
+				this.collector.ack(tuple);
+				LOG.error("Http get took: "
+						+ ((new Date()).getTime() - currentTimestamp));
+
 			} else {
 				try {
 					PrintWriter out = new PrintWriter(new FileWriter(
@@ -105,5 +115,6 @@ public class WriteToFileBolt extends BaseRichBolt {
 			OutputCollector collector) {
 		this.collector = collector;
 		client = HttpClientBuilder.create().build();
+
 	}
 }

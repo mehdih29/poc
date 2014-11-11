@@ -45,9 +45,11 @@ public class JobStarterBolt extends BaseRichBolt {
 	private static String COUNT = "count=";
 	private HttpClient client;
 	private OutputCollector collector;
-	private static int STEP = 1000;
+	private static int STEP = 500;
 	static Logger LOG = Logger.getLogger(JobStarterBolt.class);
-	private static String FILE_RECOVERY_WINDOWS = "/home/sysinstall/POC/_file_recovery_window";
+	// private static String FILE_RECOVERY_WINDOWS =
+	// "/dev/shm/_file_recovery_window";
+	private static String FILE_RECOVERY_WINDOWS = "/svdb/POC/_file_recovery_window";
 	XPath xpath = null;
 	DocumentBuilder builder;
 
@@ -60,11 +62,13 @@ public class JobStarterBolt extends BaseRichBolt {
 
 		String slidingWindow = (String) tuple.getValue(0);
 
+		LOG.debug("processing " + slidingWindow);
+
+		// HttpGet get = new HttpGet("http://localhost:8000/out2");
 		HttpGet get = new HttpGet(STREAMING_API_URL + slidingWindow + SEP
 				+ STARTINDEX + "1" + SEP + COUNT + "1");
 		HttpResponse response;
 
-		// Execute
 		try {
 			String url = null;
 
@@ -75,8 +79,8 @@ public class JobStarterBolt extends BaseRichBolt {
 
 				// TODO remove this lines for the write in the files
 
-				// PrintWriter writer = new PrintWriter("/dev/shm/_file_" +
-				// formater.format(date), "UTF-8");
+				// PrintWriter writer = new PrintWriter("/svdb/POC/_file_"+
+				// slidingWindow, "UTF-8");
 
 				InputStream inputStream = response.getEntity().getContent();
 
@@ -135,6 +139,7 @@ public class JobStarterBolt extends BaseRichBolt {
 		}
 	}
 
+	// public void prepare(Map stormConf, TopologyContext context) {
 	public void prepare(Map stormConf, TopologyContext context,
 			OutputCollector collector) {
 		this.collector = collector;

@@ -11,36 +11,37 @@ import com.arismore.poste.storm.bolts.WriteToFileBolt;
 import com.arismore.poste.storm.spouts.TickTimerSpout;
 
 /**
- * This is a basic example of a Storm topology.
+ * REST to file Storm topology.
  */
 public class RestToFileTopologie {
 
 	public static void main(String[] args) throws Exception {
 		TopologyBuilder builder = new TopologyBuilder();
 
-		builder.setSpout("word", new TickTimerSpout(), 1);
-
-		builder.setBolt("jobStarter", new JobStarterBolt(), 2).shuffleGrouping(
-				"word");
-		builder.setBolt("tofile", new WriteToFileBolt(), 2).shuffleGrouping(
-				"jobStarter");
+		builder.setSpout("slidingWindow", new TickTimerSpout(), 1);
+		// --> 2/1= 2 tasks per executors
+		builder.setBolt("jobStarter", new JobStarterBolt(), 1)// .setNumTasks(2)
+				.shuffleGrouping("slidingWindow");
+		// --> 200/100= 2 tasks per executors
+		builder.setBolt("tofile", new WriteToFileBolt(), 60).setNumTasks(180)
+				.shuffleGrouping("jobStarter");
 
 		Config conf = new Config();
+		// conf.setMessageTimeoutSecs(120);
+		// Config.STORM_ZOOKEEPER_SESSION_TIMEOUT =
+
+		// The maximum amount of time given to the topology to fully process a
+		// message emitted by a spout
+		conf.put(Config.TOPOLOGY_MESSAGE_TIMEOUT_SECS, 600);
+
 		conf.setDebug(true);
 
 		if (args != null && args.length > 0) {
-			conf.setNumWorkers(6);
-			conf.setNumAckers(2);
+			conf.setNumWorkers(10);
+			conf.setNumAckers(0);
 
 			StormSubmitter.submitTopologyWithProgressBar(args[0], conf,
 					builder.createTopology());
-		} else {
-
-			LocalCluster cluster = new LocalCluster();
-			cluster.submitTopology("test", conf, builder.createTopology());
-			Utils.sleep(10000);
-			cluster.killTopology("test");
-			cluster.shutdown();
 		}
 	}
 }

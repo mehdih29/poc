@@ -12,7 +12,6 @@ import java.util.TimerTask;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import backtype.storm.Config;
 import backtype.storm.spout.SpoutOutputCollector;
 import backtype.storm.task.TopologyContext;
 import backtype.storm.topology.OutputFieldsDeclarer;
@@ -66,31 +65,29 @@ public class TickTimerSpout extends BaseRichSpout {
 		}
 	}
 
+	@Override
 	public void ack(Object msgId) {
-
+		LOG.debug("Acked message with msgId: {}", new Object[] { msgId });
 	}
 
+	@Override
 	public void fail(Object msgId) {
-
+		LOG.debug("Failed message with msgId: {}", new Object[] { msgId });
 	}
 
 	public void declareOutputFields(OutputFieldsDeclarer declarer) {
 		declarer.declare(new Fields("slidingWindow"));
 	}
 
-	@Override
-	public Map<String, Object> getComponentConfiguration() {
-		Config conf = new Config();
-		if (!_isDistributed) {
-			conf.put(Config.TOPOLOGY_MAX_TASK_PARALLELISM, 1);
-		} else {
-
-			int tickFrequencyInSeconds = 60;
-			conf.put(Config.TOPOLOGY_TICK_TUPLE_FREQ_SECS,
-					tickFrequencyInSeconds);
-		}
-		return conf;
-	}
+	/*
+	 * @Override public Map<String, Object> getComponentConfiguration() { Config
+	 * conf = new Config(); if (!_isDistributed) {
+	 * conf.put(Config.TOPOLOGY_MAX_TASK_PARALLELISM, 1); } else {
+	 * 
+	 * int tickFrequencyInSeconds = 60;
+	 * conf.put(Config.TOPOLOGY_TICK_TUPLE_FREQ_SECS, tickFrequencyInSeconds); }
+	 * return conf; }
+	 */
 
 	static class RemindTask extends TimerTask {
 		private static String BEGINDATE = "dateDebut=";
