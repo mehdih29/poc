@@ -35,9 +35,11 @@ public class RestToFileTopologie {
 		// Config.STORM_ZOOKEEPER_SESSION_TIMEOUT =
 		
 
-		// The maximum amount of time given to the topology to fully process a
-		// message emitted by a spout
+		/* The maximum amount of time given 
+		** to the topology to fully process
+		** a message emitted by a spout */
 		conf.put(Config.TOPOLOGY_MESSAGE_TIMEOUT_SECS, 600);
+		conf.put(Config.NIMBUS_TASK_TIMEOUT_SECS, 500);
 
 		conf.setDebug(false);
 

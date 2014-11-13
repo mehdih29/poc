@@ -56,8 +56,6 @@ public class JobStarterBolt extends BaseRichBolt {
 	}
 
 	public void execute(Tuple tuple) {
-		// TODO Auto-generated method stub
-
 		String slidingWindow = (String) tuple.getValue(0);
 
 		LOG.debug("processing " + slidingWindow);
