@@ -47,7 +47,7 @@ public class JobStarterBolt extends BaseRichBolt {
 	private OutputCollector collector;
 	private static int STEP = 1000;
 	static Logger LOG = Logger.getLogger(JobStarterBolt.class);
-	private static String FILE_RECOVERY_WINDOWS = "/dev/shm/_file_recovery_window";
+	private static String FILE_RECOVERY_WINDOWS = "/svdb/POC/_file_recovery_window";
 	XPath xpath = null;
 	DocumentBuilder builder;
 
@@ -62,8 +62,8 @@ public class JobStarterBolt extends BaseRichBolt {
 
 		LOG.debug("processing " + slidingWindow);
 
-		HttpGet get = new HttpGet("http://localhost:8000/out2");
-		// HttpGet get = new HttpGet(STREAMING_API_URL + slidingWindow + SEP + STARTINDEX + "1" + SEP + COUNT + "1");
+		HttpGet get = new HttpGet(STREAMING_API_URL + slidingWindow + SEP
+				+ STARTINDEX + "1" + SEP + COUNT + "1");
 		HttpResponse response;
 
 		try {
@@ -74,11 +74,6 @@ public class JobStarterBolt extends BaseRichBolt {
 
 			if (status.getStatusCode() == 200) {
 
-				// TODO remove this lines for the write in the files
-
-				// PrintWriter writer = new PrintWriter("/svdb/POC/_file_"+
-				// slidingWindow, "UTF-8");
-
 				InputStream inputStream = response.getEntity().getContent();
 
 				Document doc = builder.parse(new InputSource(inputStream));
@@ -87,16 +82,12 @@ public class JobStarterBolt extends BaseRichBolt {
 				int number = Integer.parseInt((String) xpath.compile(
 						"/a:feed/openSearch:totalResults").evaluate(doc,
 						XPathConstants.STRING));
-				// writer.println(number);
 				for (int i = 1; i < number; i += STEP) {
 					url = slidingWindow + SEP + STARTINDEX + i + SEP + COUNT
 							+ STEP;
 					collector.emit(tuple, new Values(url));
-
-					// writer.println(url);
 				}
 				collector.ack(tuple);
-				// writer.close();
 			} else {
 				try {
 					PrintWriter out = new PrintWriter(new FileWriter(

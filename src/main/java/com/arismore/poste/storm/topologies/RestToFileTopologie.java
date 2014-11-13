@@ -24,10 +24,10 @@ public class RestToFileTopologie {
 		builder.setBolt("jobStarter", new JobStarterBolt(), 1)// .setNumTasks(2)
 				.shuffleGrouping("slidingWindow");
 		// --> 200/100= 2 tasks per executors
-		builder.setBolt("uriGet", new UriGetBolt(), 5).setNumTasks(10)
+		builder.setBolt("uriGet", new UriGetBolt(), 6).setNumTasks(1)
 				.shuffleGrouping("jobStarter");
 		
-		builder.setBolt("tofile", new WriteToFileBolt(), 2).setNumTasks(4)
+		builder.setBolt("tofile", new WriteToFileBolt(), 4).setNumTasks(8)
 		.shuffleGrouping("uriGet");
 
 		Config conf = new Config();
@@ -42,8 +42,8 @@ public class RestToFileTopologie {
 		conf.setDebug(false);
 
 		if (args != null && args.length > 0) {
-			conf.setNumWorkers(3);
-			conf.setNumAckers(1);
+			conf.setNumWorkers(12);
+			conf.setNumAckers(2);
 
 			StormSubmitter.submitTopologyWithProgressBar(args[0], conf,
 					builder.createTopology());

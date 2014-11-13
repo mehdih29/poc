@@ -1,7 +1,6 @@
 package com.arismore.poste.storm.bolts;
 
 import java.io.FileNotFoundException;
-import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.UnsupportedEncodingException;
 import java.util.Date;
@@ -17,7 +16,7 @@ import backtype.storm.tuple.Tuple;
 
 public class WriteToFileBolt extends BaseRichBolt {
 
-	private static final long serialVersionUID = 111112L;
+	private static final long serialVersionUID = 222111112L;
 	private OutputCollector collector;
 	static Logger LOG = Logger.getLogger(WriteToFileBolt.class);
 
@@ -28,18 +27,12 @@ public class WriteToFileBolt extends BaseRichBolt {
 
 		String url = (String) tuple.getValue(0);
 		String content = (String) tuple.getValue(1);
-		// InputStream inputStream = (InputStream) tuple.getValue(1);
-		// BufferedReader reader = new BufferedReader(new
-		// InputStreamReader(inputStream));
 		Long currentTimestamp = (new Date()).getTime();
 
 		try {
-			PrintWriter writer = new PrintWriter("/dev/shm/_file_" + url,
+			PrintWriter writer = new PrintWriter("/svdb/POC/_file_" + url,
 					"UTF-8");
 
-			/*
-			 * while ((in = reader.readLine()) != null) { writer.println(in); }
-			 */
 			writer.println(content);
 
 			writer.close();
@@ -51,9 +44,6 @@ public class WriteToFileBolt extends BaseRichBolt {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		} catch (UnsupportedEncodingException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
