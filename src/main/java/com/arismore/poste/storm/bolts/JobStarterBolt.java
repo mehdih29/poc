@@ -45,11 +45,9 @@ public class JobStarterBolt extends BaseRichBolt {
 	private static String COUNT = "count=";
 	private HttpClient client;
 	private OutputCollector collector;
-	private static int STEP = 500;
+	private static int STEP = 1000;
 	static Logger LOG = Logger.getLogger(JobStarterBolt.class);
-	// private static String FILE_RECOVERY_WINDOWS =
-	// "/dev/shm/_file_recovery_window";
-	private static String FILE_RECOVERY_WINDOWS = "/svdb/POC/_file_recovery_window";
+	private static String FILE_RECOVERY_WINDOWS = "/dev/shm/_file_recovery_window";
 	XPath xpath = null;
 	DocumentBuilder builder;
 
@@ -64,9 +62,8 @@ public class JobStarterBolt extends BaseRichBolt {
 
 		LOG.debug("processing " + slidingWindow);
 
-		// HttpGet get = new HttpGet("http://localhost:8000/out2");
-		HttpGet get = new HttpGet(STREAMING_API_URL + slidingWindow + SEP
-				+ STARTINDEX + "1" + SEP + COUNT + "1");
+		HttpGet get = new HttpGet("http://localhost:8000/out2");
+		// HttpGet get = new HttpGet(STREAMING_API_URL + slidingWindow + SEP + STARTINDEX + "1" + SEP + COUNT + "1");
 		HttpResponse response;
 
 		try {
@@ -94,7 +91,7 @@ public class JobStarterBolt extends BaseRichBolt {
 				for (int i = 1; i < number; i += STEP) {
 					url = slidingWindow + SEP + STARTINDEX + i + SEP + COUNT
 							+ STEP;
-					collector.emit(new Values(url));
+					collector.emit(tuple, new Values(url));
 
 					// writer.println(url);
 				}

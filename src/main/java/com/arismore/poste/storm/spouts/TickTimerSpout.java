@@ -61,7 +61,8 @@ public class TickTimerSpout extends BaseRichSpout {
 		if (TickTimerSpout.slidingWindow.isEmpty()) {
 			Utils.sleep(1000);
 		} else {
-			_collector.emit(new Values(TickTimerSpout.slidingWindow.remove(0)));
+			String window = TickTimerSpout.slidingWindow.remove(0);
+			_collector.emit(new Values(window), window);
 		}
 	}
 

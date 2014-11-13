@@ -27,8 +27,8 @@ public class JsonToESBolt extends BaseRichBolt {
 	public void execute(Tuple tuple) {
 		QueryEntry entry = (QueryEntry) tuple.getValue(0);
 		for (int j = 0; j < entry.getParcels().size(); j++) {
-
-			/*bulkRequest.add(instance
+/*
+			bulkRequest.add(instance
 					.getClient()
 					.prepareIndex(
 							"parceldata",

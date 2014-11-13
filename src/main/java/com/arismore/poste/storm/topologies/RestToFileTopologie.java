@@ -7,6 +7,7 @@ import backtype.storm.topology.TopologyBuilder;
 import backtype.storm.utils.Utils;
 
 import com.arismore.poste.storm.bolts.JobStarterBolt;
+import com.arismore.poste.storm.bolts.UriGetBolt;
 import com.arismore.poste.storm.bolts.WriteToFileBolt;
 import com.arismore.poste.storm.spouts.TickTimerSpout;
 
@@ -23,22 +24,26 @@ public class RestToFileTopologie {
 		builder.setBolt("jobStarter", new JobStarterBolt(), 1)// .setNumTasks(2)
 				.shuffleGrouping("slidingWindow");
 		// --> 200/100= 2 tasks per executors
-		builder.setBolt("tofile", new WriteToFileBolt(), 60).setNumTasks(180)
+		builder.setBolt("uriGet", new UriGetBolt(), 5).setNumTasks(10)
 				.shuffleGrouping("jobStarter");
+		
+		builder.setBolt("tofile", new WriteToFileBolt(), 2).setNumTasks(4)
+		.shuffleGrouping("uriGet");
 
 		Config conf = new Config();
 		// conf.setMessageTimeoutSecs(120);
 		// Config.STORM_ZOOKEEPER_SESSION_TIMEOUT =
+		
 
 		// The maximum amount of time given to the topology to fully process a
 		// message emitted by a spout
 		conf.put(Config.TOPOLOGY_MESSAGE_TIMEOUT_SECS, 600);
 
-		conf.setDebug(true);
+		conf.setDebug(false);
 
 		if (args != null && args.length > 0) {
-			conf.setNumWorkers(10);
-			conf.setNumAckers(0);
+			conf.setNumWorkers(3);
+			conf.setNumAckers(1);
 
 			StormSubmitter.submitTopologyWithProgressBar(args[0], conf,
 					builder.createTopology());
