@@ -22,10 +22,10 @@ public class RestToFileTopologie {
 		builder.setBolt("jobStarter", new JobStarterBolt(), 1)// .setNumTasks(2)
 				.shuffleGrouping("slidingWindow");
 		// --> 200/100= 2 tasks per executors
-		builder.setBolt("uriGet", new UriGetBolt(), 6).setNumTasks(10)
+		builder.setBolt("uriGet", new UriGetBolt(), 5).setNumTasks(10)
 				.shuffleGrouping("jobStarter");
 
-		builder.setBolt("tofile", new WriteToFileBolt(), 4).setNumTasks(8)
+		builder.setBolt("tofile", new WriteToFileBolt(), 2).setNumTasks(8)
 				.shuffleGrouping("uriGet");
 
 		Config conf = new Config();
@@ -37,24 +37,32 @@ public class RestToFileTopologie {
 		 * message emitted by a spout
 		 */
 		conf.put(Config.TOPOLOGY_MESSAGE_TIMEOUT_SECS, 600);
-		
-		/* How long without heartbeating a task can go 
-		** before nimbus will consider the task dead 
-		** and reassign it to another location
-		* */
+
+		/*
+		 * How long without heartbeating a task can go* before nimbus will
+		 * consider the task dead* and reassign it to another location
+		 */
 		conf.put(Config.NIMBUS_TASK_TIMEOUT_SECS, 500);
 
-		/* How long before a supervisor can go without 
-		** heartbeating before nimbus considers it dead 
-		** and stops assigning new work to it
-		**/
-		conf.put(Config.NIMBUS_SUPERVISOR_TIMEOUT_SECS, 600);
+		/*
+		 * How long before a supervisor can go without* heartbeating before
+		 * nimbus considers it dead* and stops assigning new work to it
+		 */
+		//conf.NIMBUS_SUPERVISOR_TIMEOUT_SECS = "600";
+		// .put(Config.NIMBUS_SUPERVISOR_TIMEOUT_SECS, 600);
+
+		/*
+		 * storm.messaging.netty.buffer_size: 209715200 (buffersize in bytes,here is 200MByte) 
+		 * storm.messaging.netty.max_retries: 10
+		 * storm.messaging.netty.min_wait_ms: 5000
+		 * storm.messaging.netty.max_wait_ms: 10000
+		 */
 
 		conf.setDebug(false);
 
 		if (args != null && args.length > 0) {
-			conf.setNumWorkers(12);
-			conf.setNumAckers(2);
+			conf.setNumWorkers(9);
+			conf.setNumAckers(1);
 
 			StormSubmitter.submitTopologyWithProgressBar(args[0], conf,
 					builder.createTopology());
