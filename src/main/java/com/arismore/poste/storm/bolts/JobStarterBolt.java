@@ -67,9 +67,10 @@ public class JobStarterBolt extends BaseRichBolt {
 
 		LOG.debug("processing " + dateDebut + "  " + dateFin);
 
-		HttpGet get = new HttpGet(STREAMING_API_URL + BEGINDATE + dateDebut
-				+ SEP + ENDDATE + dateFin + SEP + STARTINDEX + "1" + SEP
-				+ COUNT + "1");
+		HttpGet get = new HttpGet("http://localhost:8000/out2");
+		/*HttpGet get = new HttpGet(STREAMING_API_URL + BEGINDATE + dateDebut
++ SEP + ENDDATE + dateFin + SEP + STARTINDEX + "1" + SEP
+				+ COUNT + "1");*/
 		HttpResponse response;
 
 		try {

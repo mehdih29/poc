@@ -39,7 +39,6 @@ public class UriGetBolt extends BaseRichBolt {
 	static Logger LOG = Logger.getLogger(UriGetBolt.class);
 	private static String FILE_RECOVERY_SLIDING_WINDOWS = "/tmp/_file_recovery_sliding_window";
 
-	
 	public void declareOutputFields(OutputFieldsDeclarer declarer) {
 		declarer.declare(new Fields("URI", "content"));
 	}
@@ -48,14 +47,14 @@ public class UriGetBolt extends BaseRichBolt {
 
 		String dateDebut = (String) tuple.getValue(0);
 		String dateFin = (String) tuple.getValue(1);
-		String startIndex = (String) tuple.getValue(2);
-		String count = (String) tuple.getValue(3);
+		Integer startIndex = (Integer) tuple.getValue(2);
+		Integer count = (Integer) tuple.getValue(3);
 
 		Long currentTimestamp = (new Date()).getTime();
-		String url = STREAMING_API_URL + BEGINDATE + dateDebut
-				+ SEP + ENDDATE + dateFin + SEP + STARTINDEX + startIndex + SEP
-				+ COUNT + count; 
-		HttpGet get = new HttpGet(url);
+		String url = STREAMING_API_URL + BEGINDATE + dateDebut + SEP + ENDDATE
+				+ dateFin + SEP + STARTINDEX + startIndex + SEP + COUNT + count;
+
+		HttpGet get = new HttpGet("http://www.google.com");
 
 		HttpResponse response;
 
@@ -68,7 +67,12 @@ public class UriGetBolt extends BaseRichBolt {
 			if (status.getStatusCode() == 200) {
 				InputStream inputStream = response.getEntity().getContent();
 
-				collector.emit(tuple, new Values(url, IOUtils.toString(inputStream, "utf-8")));
+				collector.emit(
+						tuple,
+						new Values(BEGINDATE + dateDebut + SEP + ENDDATE
+								+ dateFin + SEP + STARTINDEX + startIndex + SEP
+								+ COUNT + count, IOUtils.toString(inputStream,
+								"utf-8")));
 				collector.ack(tuple);
 				LOG.error("Http get took: "
 						+ ((new Date()).getTime() - currentTimestamp));

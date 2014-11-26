@@ -4,7 +4,6 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
-import java.util.List;
 import java.util.Map;
 import java.util.TimeZone;
 import java.util.Timer;
@@ -63,8 +62,8 @@ public class TickTimerSpout extends BaseRichSpout {
 			Utils.sleep(1000);
 		} else {
 			ArrayList<String> window = TickTimerSpout.slidingWindow.remove(0);
-			//String window = TickTimerSpout.slidingWindow.remove(0);
-			
+			// String window = TickTimerSpout.slidingWindow.remove(0);
+
 			_collector.emit(new Values(window.get(0), window.get(1)), window);
 		}
 	}
