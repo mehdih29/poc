@@ -32,10 +32,7 @@ public class UriToFileBolt extends BaseRichBolt {
 	private HttpClient client;
 	private OutputCollector collector;
 	static Logger LOG = Logger.getLogger(UriToFileBolt.class);
-	private static String FILE_RECOVERY_SLIDING_WINDOWS = "/dev/shm/_file_recovery_sliding_window";
-
-	// private static String FILE_RECOVERY_SLIDING_WINDOWS =
-	// "/dev/shm/_file_recovery_sliding_window";
+	private static String FILE_RECOVERY_SLIDING_WINDOWS = "/svdb/POC/_file_recovery_sliding_window";
 
 	public void declareOutputFields(OutputFieldsDeclarer declarer) {
 		declarer.declare(new Fields("content"));
@@ -45,13 +42,8 @@ public class UriToFileBolt extends BaseRichBolt {
 
 		String url = (String) tuple.getValue(0);
 
-		// LOG.error("processing " + url);
 		Long currentTimestamp = (new Date()).getTime();
-		// LOG.error("currentTimestamp " + currentTimestamp);
-		HttpGet get = new HttpGet("http://www.google.com");
-		// HttpGet get = new HttpGet(STREAMING_API_URL + url);
-
-		
+		HttpGet get = new HttpGet(STREAMING_API_URL + url);
 
 		HttpResponse response;
 
@@ -67,18 +59,13 @@ public class UriToFileBolt extends BaseRichBolt {
 						new InputStreamReader(inputStream));
 				String in;
 
-				PrintWriter writer = new PrintWriter("/dev/shm/_file_" + url,
+				PrintWriter writer = new PrintWriter("/svdb/POC/_file_" + url,
 						"UTF-8");
-				// PrintWriter writer = new PrintWriter("/dev/shm/_file_" + url,
-				// "UTF-8");
-				// writer.println(url);
-
-				// Read line by line
 				
 				while ((in = reader.readLine()) != null) {
-					for (int i = 0; i < 200; i++) {
+					//for (int i = 0; i < 200; i++) {
 						writer.println(in);
-					}
+					//}
 				}
 				
 				writer.close();

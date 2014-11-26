@@ -27,16 +27,14 @@ import backtype.storm.tuple.Values;
 
 public class UriGetBolt extends BaseRichBolt {
 
-	private static final long serialVersionUID = 111112L;
+	private static final long serialVersionUID = 222111112L;
 	static String STREAMING_API_URL = "http://national.cpn.prd.sie.courrier.intra.laposte.fr/National/enveloppes/v1/externe?";
 	private HttpClient client;
 	private OutputCollector collector;
 	static Logger LOG = Logger.getLogger(UriGetBolt.class);
 	private static String FILE_RECOVERY_SLIDING_WINDOWS = "/tmp/_file_recovery_sliding_window";
 
-	// private static String FILE_RECOVERY_SLIDING_WINDOWS =
-	// "/dev/shm/_file_recovery_sliding_window";
-
+	
 	public void declareOutputFields(OutputFieldsDeclarer declarer) {
 		declarer.declare(new Fields("URI", "content"));
 	}
@@ -46,8 +44,8 @@ public class UriGetBolt extends BaseRichBolt {
 		String url = (String) tuple.getValue(0);
 
 		Long currentTimestamp = (new Date()).getTime();
-		HttpGet get = new HttpGet("http://www.google.com");
-		// HttpGet get = new HttpGet(STREAMING_API_URL + url);
+		
+		HttpGet get = new HttpGet(STREAMING_API_URL + url);
 
 		HttpResponse response;
 
@@ -59,8 +57,6 @@ public class UriGetBolt extends BaseRichBolt {
 
 			if (status.getStatusCode() == 200) {
 				InputStream inputStream = response.getEntity().getContent();
-				
-				//BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream));
 
 				collector.emit(tuple, new Values(url, IOUtils.toString(inputStream, "utf-8")));
 				collector.ack(tuple);
