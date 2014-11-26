@@ -29,6 +29,11 @@ public class UriGetBolt extends BaseRichBolt {
 
 	private static final long serialVersionUID = 222111112L;
 	static String STREAMING_API_URL = "http://national.cpn.prd.sie.courrier.intra.laposte.fr/National/enveloppes/v1/externe?";
+	private static String SEP = "&";
+	private static String BEGINDATE = "dateDebut=";
+	private static String ENDDATE = "dateFin=";
+	private static String STARTINDEX = "startIndex=";
+	private static String COUNT = "count=";
 	private HttpClient client;
 	private OutputCollector collector;
 	static Logger LOG = Logger.getLogger(UriGetBolt.class);
@@ -41,11 +46,16 @@ public class UriGetBolt extends BaseRichBolt {
 
 	public void execute(Tuple tuple) {
 
-		String url = (String) tuple.getValue(0);
+		String dateDebut = (String) tuple.getValue(0);
+		String dateFin = (String) tuple.getValue(1);
+		String startIndex = (String) tuple.getValue(2);
+		String count = (String) tuple.getValue(3);
 
 		Long currentTimestamp = (new Date()).getTime();
-		
-		HttpGet get = new HttpGet(STREAMING_API_URL + url);
+		String url = STREAMING_API_URL + BEGINDATE + dateDebut
+				+ SEP + ENDDATE + dateFin + SEP + STARTINDEX + startIndex + SEP
+				+ COUNT + count; 
+		HttpGet get = new HttpGet(url);
 
 		HttpResponse response;
 

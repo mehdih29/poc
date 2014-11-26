@@ -41,6 +41,8 @@ public class JobStarterBolt extends BaseRichBolt {
 	private static final long serialVersionUID = 111111L;
 	static String STREAMING_API_URL = "http://national.cpn.prd.sie.courrier.intra.laposte.fr/National/enveloppes/v1/externe?";
 	private static String SEP = "&";
+	private static String BEGINDATE = "dateDebut=";
+	private static String ENDDATE = "dateFin=";
 	private static String STARTINDEX = "startIndex=";
 	private static String COUNT = "count=";
 	private HttpClient client;
@@ -54,16 +56,20 @@ public class JobStarterBolt extends BaseRichBolt {
 	DocumentBuilder builder;
 
 	public void declareOutputFields(OutputFieldsDeclarer declarer) {
-		declarer.declare(new Fields("url"));
+		declarer.declare(new Fields("dateDebut", "dateFin", "startIndex",
+				"count"));
 	}
 
 	public void execute(Tuple tuple) {
-		String slidingWindow = (String) tuple.getValue(0);
 
-		LOG.debug("processing " + slidingWindow);
+		String dateDebut = (String) tuple.getValue(0);
+		String dateFin = (String) tuple.getValue(1);
 
-		HttpGet get = new HttpGet(STREAMING_API_URL + slidingWindow + SEP
-				+ STARTINDEX + "1" + SEP + COUNT + "1");
+		LOG.debug("processing " + dateDebut + "  " + dateFin);
+
+		HttpGet get = new HttpGet(STREAMING_API_URL + BEGINDATE + dateDebut
+				+ SEP + ENDDATE + dateFin + SEP + STARTINDEX + "1" + SEP
+				+ COUNT + "1");
 		HttpResponse response;
 
 		try {
@@ -83,17 +89,17 @@ public class JobStarterBolt extends BaseRichBolt {
 						"/a:feed/openSearch:totalResults").evaluate(doc,
 						XPathConstants.STRING));
 				for (int i = 1; i < number; i += STEP) {
-					url = slidingWindow + SEP + STARTINDEX + i + SEP + COUNT
-							+ STEP;
-					collector.emit(tuple, new Values(url));
+					collector.emit(tuple, new Values(dateDebut, dateFin, i,
+							STEP));
 				}
 				collector.ack(tuple);
 			} else {
 				try {
 					PrintWriter out = new PrintWriter(new FileWriter(
 							FILE_RECOVERY_WINDOWS, true));
-					out.println(STREAMING_API_URL + slidingWindow + SEP
-							+ STARTINDEX + "1" + SEP + COUNT + "1");
+					out.println(STREAMING_API_URL + BEGINDATE + dateDebut + SEP
+							+ ENDDATE + dateFin + SEP + STARTINDEX + "1" + SEP
+							+ COUNT + "1");
 					out.close();
 				} catch (IOException e) {
 					e.printStackTrace();
@@ -112,8 +118,9 @@ public class JobStarterBolt extends BaseRichBolt {
 			try {
 				PrintWriter out = new PrintWriter(new FileWriter(
 						FILE_RECOVERY_WINDOWS, true));
-				out.println(STREAMING_API_URL + slidingWindow + SEP
-						+ STARTINDEX + "1" + SEP + COUNT + "1");
+				out.println(STREAMING_API_URL + BEGINDATE + dateDebut + SEP
+						+ ENDDATE + dateFin + SEP + STARTINDEX + "1" + SEP
+						+ COUNT + "1");
 				out.close();
 			} catch (IOException a) {
 				a.printStackTrace();
