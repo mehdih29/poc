@@ -47,13 +47,12 @@ public class UriGetBolt extends BaseRichBolt {
 
 		String dateDebut = (String) tuple.getValue(0);
 		String dateFin = (String) tuple.getValue(1);
-		String startIndex = (String) tuple.getValue(2);
-		String count = (String) tuple.getValue(3);
+		Integer startIndex = (Integer) tuple.getValue(2);
+		Integer count = (Integer) tuple.getValue(3);
 
 		Long currentTimestamp = (new Date()).getTime();
-		String url = STREAMING_API_URL + BEGINDATE + dateDebut
-				+ SEP + ENDDATE + dateFin + SEP + STARTINDEX + startIndex + SEP
-				+ COUNT + count; 
+		String url = STREAMING_API_URL + BEGINDATE + dateDebut + SEP + ENDDATE
+				+ dateFin + SEP + STARTINDEX + startIndex + SEP + COUNT + count;
 		HttpGet get = new HttpGet(url);
 
 		HttpResponse response;
@@ -67,7 +66,12 @@ public class UriGetBolt extends BaseRichBolt {
 			if (status.getStatusCode() == 200) {
 				InputStream inputStream = response.getEntity().getContent();
 
-				collector.emit(tuple, new Values(url, IOUtils.toString(inputStream, "utf-8")));
+				collector.emit(
+						tuple,
+						new Values(BEGINDATE + dateDebut + SEP + ENDDATE
+								+ dateFin + SEP + STARTINDEX + startIndex + SEP
+								+ COUNT + count, IOUtils.toString(inputStream,
+								"utf-8")));
 				collector.ack(tuple);
 				LOG.error("Http get took: "
 						+ ((new Date()).getTime() - currentTimestamp));
