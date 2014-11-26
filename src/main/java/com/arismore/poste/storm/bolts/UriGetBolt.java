@@ -10,11 +10,16 @@ import java.util.Date;
 import java.util.Map;
 
 import org.apache.commons.io.IOUtils;
+import org.apache.http.HttpHost;
 import org.apache.http.HttpResponse;
 import org.apache.http.StatusLine;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpGet;
+import org.apache.http.conn.ConnectionRequest;
+import org.apache.http.conn.routing.HttpRoute;
 import org.apache.http.impl.client.HttpClientBuilder;
+import org.apache.http.impl.client.HttpClients;
+import org.apache.http.impl.conn.BasicHttpClientConnectionManager;
 import org.apache.log4j.Logger;
 
 import backtype.storm.task.OutputCollector;
@@ -53,6 +58,11 @@ public class UriGetBolt extends BaseRichBolt {
 		Long currentTimestamp = (new Date()).getTime();
 		String url = STREAMING_API_URL + BEGINDATE + dateDebut + SEP + ENDDATE
 				+ dateFin + SEP + STARTINDEX + startIndex + SEP + COUNT + count;
+		
+//		import org.apache.http.NameValuePair;
+//		 HttpPost post = new HttpPost("https://www.google.com/accounts/ClientLogin");
+//		 List<NameValuePair> nameValuePairs = new ArrayList<NameValuePair>(1);
+//		 nameValuePairs.add(new BasicNameValuePair("Email", "youremail"));
 
 		HttpGet get = new HttpGet("http://www.google.com");
 
@@ -110,7 +120,13 @@ public class UriGetBolt extends BaseRichBolt {
 	public void prepare(Map stormConf, TopologyContext context,
 			OutputCollector collector) {
 		this.collector = collector;
-		client = HttpClientBuilder.create().build();
+		//client = HttpClientBuilder.create().build();
+		BasicHttpClientConnectionManager connManager =
+			    new BasicHttpClientConnectionManager();
+			HttpRoute route = new HttpRoute(new HttpHost("www.google.com", 80));
+			//HttpHost target = new HttpHost("weather.yahooapis.com", 80, "http");
+			ConnectionRequest connRequest = connManager.requestConnection(route, null);
+			client = HttpClients.custom().setConnectionManager(connManager).build();
 
 	}
 }
