@@ -94,9 +94,6 @@ public class TickTimerSpout extends BaseRichSpout {
 	 */
 
 	static class RemindTask extends TimerTask {
-		private static String BEGINDATE = "dateDebut=";
-		private static String ENDDATE = "dateFin=";
-		private static String SEP = "&";
 
 		@Override
 		public void run() {
