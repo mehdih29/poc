@@ -4,6 +4,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.List;
 import java.util.Map;
 import java.util.TimeZone;
 import java.util.Timer;
@@ -26,7 +27,7 @@ public class TickTimerSpout extends BaseRichSpout {
 	public static Logger LOG = LoggerFactory.getLogger(TickTimerSpout.class);
 	boolean _isDistributed;
 	SpoutOutputCollector _collector;
-	private static ArrayList<String> slidingWindow = null;
+	private static ArrayList<ArrayList<String>> slidingWindow = null;
 	private static Timer timer = null;
 	private static SimpleDateFormat formater = null;
 	private static Calendar cal = null;
@@ -48,7 +49,7 @@ public class TickTimerSpout extends BaseRichSpout {
 				"yyyy-MM-dd'T'HH:mm':00Z'");
 		TickTimerSpout.formater.setTimeZone(TimeZone.getTimeZone("UTC"));
 		TickTimerSpout.cal = Calendar.getInstance();
-		slidingWindow = new ArrayList<String>();
+		slidingWindow = new ArrayList<ArrayList<String>>();
 		timer = new Timer(); // At this line a new Thread will be created
 		timer.schedule(new RemindTask(), 0, 60 * 1000); // delay in milliseconds
 	}
@@ -61,8 +62,10 @@ public class TickTimerSpout extends BaseRichSpout {
 		if (TickTimerSpout.slidingWindow.isEmpty()) {
 			Utils.sleep(1000);
 		} else {
-			String window = TickTimerSpout.slidingWindow.remove(0);
-			_collector.emit(new Values(window), window);
+			ArrayList<String> window = TickTimerSpout.slidingWindow.remove(0);
+			//String window = TickTimerSpout.slidingWindow.remove(0);
+			
+			_collector.emit(new Values(window.get(0), window.get(1)), window);
 		}
 	}
 
@@ -77,7 +80,7 @@ public class TickTimerSpout extends BaseRichSpout {
 	}
 
 	public void declareOutputFields(OutputFieldsDeclarer declarer) {
-		declarer.declare(new Fields("slidingWindow"));
+		declarer.declare(new Fields("dateDebut", "dateFin"));
 	}
 
 	/*
@@ -107,9 +110,10 @@ public class TickTimerSpout extends BaseRichSpout {
 			cal.setTime(date);
 			cal.add(Calendar.MINUTE, -5);
 			Date end = cal.getTime();
-			TickTimerSpout.slidingWindow.add(BEGINDATE
-					+ TickTimerSpout.formater.format(start) + SEP + ENDDATE
-					+ TickTimerSpout.formater.format(end));
+			ArrayList<String> temp = new ArrayList<String>();
+			temp.add(TickTimerSpout.formater.format(start));
+			temp.add(TickTimerSpout.formater.format(end));
+			TickTimerSpout.slidingWindow.add(temp);
 
 		}
 	}
