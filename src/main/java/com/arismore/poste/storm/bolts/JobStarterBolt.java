@@ -47,7 +47,7 @@ public class JobStarterBolt extends BaseRichBolt {
 	private OutputCollector collector;
 	private static int STEP = 1000;
 	static Logger LOG = Logger.getLogger(JobStarterBolt.class);
-	private static String FILE_RECOVERY_WINDOWS = "/dev/shm/_file_recovery_window";
+	private static String FILE_RECOVERY_WINDOWS = "/tmp/_file_recovery_window";
 	XPath xpath = null;
 	DocumentBuilder builder;
 

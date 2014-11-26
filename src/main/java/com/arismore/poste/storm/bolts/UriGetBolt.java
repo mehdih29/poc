@@ -1,11 +1,9 @@
 package com.arismore.poste.storm.bolts;
 
-import java.io.BufferedReader;
 import java.io.FileNotFoundException;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.io.UnsupportedEncodingException;
 import java.util.Date;
@@ -34,7 +32,7 @@ public class UriGetBolt extends BaseRichBolt {
 	private HttpClient client;
 	private OutputCollector collector;
 	static Logger LOG = Logger.getLogger(UriGetBolt.class);
-	private static String FILE_RECOVERY_SLIDING_WINDOWS = "/dev/shm/_file_recovery_sliding_window";
+	private static String FILE_RECOVERY_SLIDING_WINDOWS = "/tmp/_file_recovery_sliding_window";
 
 	// private static String FILE_RECOVERY_SLIDING_WINDOWS =
 	// "/dev/shm/_file_recovery_sliding_window";

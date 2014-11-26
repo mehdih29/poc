@@ -34,7 +34,7 @@ public class WriteToFileBolt extends BaseRichBolt {
 		Long currentTimestamp = (new Date()).getTime();
 
 		try {
-			PrintWriter writer = new PrintWriter("/dev/shm/_file_" + url,
+			PrintWriter writer = new PrintWriter("/tmp/_file_" + url,
 					"UTF-8");
 
 			/*
