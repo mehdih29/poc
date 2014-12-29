@@ -1,11 +1,7 @@
 package com.arismore.poste.storm.bolts;
 
-import java.io.FileNotFoundException;
-import java.io.FileWriter;
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.PrintWriter;
-import java.io.UnsupportedEncodingException;
+import java.io.StringReader;
 import java.util.Map;
 
 import javax.xml.parsers.DocumentBuilder;
@@ -16,11 +12,7 @@ import javax.xml.xpath.XPathConstants;
 import javax.xml.xpath.XPathExpressionException;
 import javax.xml.xpath.XPathFactory;
 
-import org.apache.http.HttpResponse;
-import org.apache.http.StatusLine;
 import org.apache.http.client.HttpClient;
-import org.apache.http.client.methods.HttpGet;
-import org.apache.http.impl.client.HttpClientBuilder;
 import org.apache.log4j.Logger;
 import org.w3c.dom.Document;
 import org.w3c.dom.NodeList;
@@ -57,68 +49,36 @@ public class XmlToJsonBolt extends BaseRichBolt {
 	public void execute(Tuple tuple) {
 		// TODO Auto-generated method stub
 		String url = (String) tuple.getValue(0);
+		String content = (String) tuple.getValue(1);
 
-		HttpGet get = new HttpGet(url);
-		HttpResponse response;
-
-		// Execute
+		InputSource xmlString = new InputSource(new StringReader(content));
+		Document document;
 		try {
+			document = builder.parse(xmlString);
 
-			response = client.execute(get);
-			StatusLine status = response.getStatusLine();
+			xpath.setNamespaceContext(new UniversalNamespaceCache(document,
+					true));
 
-			if (status.getStatusCode() == 200) {
+			NodeList entries = (NodeList) xpath.compile("/a:feed/a:entry")
+					.evaluate(document, XPathConstants.NODESET);
+			QueryEntry entry;
 
-				InputStream inputStream = response.getEntity().getContent();
-
-				Document document = builder.parse(new InputSource(inputStream));
-				xpath.setNamespaceContext(new UniversalNamespaceCache(document,
-						true));
-
-				NodeList entries = (NodeList) xpath.compile("/a:feed/a:entry")
-						.evaluate(document, XPathConstants.NODESET);
-				QueryEntry entry;
-
-				if (entries.getLength() > 0) {
-					for (int i = 1; i <= entries.getLength(); i++) {
-						entry = new QueryEntry(document, i, xpath);
-						collector.emit(new Values(entry));
-						/*for (int j = 0; j < entry.getParcels().size(); j++) {
-							collector.emit(new Values(instance.getGson()
-									.toJson(entry.getParcels().get(j))));
-						}*/
-					}
-					collector.ack(tuple);
+			if (entries.getLength() > 0) {
+				for (int i = 1; i <= entries.getLength(); i++) {
+					entry = new QueryEntry(document, i, xpath);
+					collector.emit(new Values(entry));
+					/*
+					 * for (int j = 0; j < entry.getParcels().size(); j++) {
+					 * collector.emit(new Values(instance.getGson()
+					 * .toJson(entry.getParcels().get(j)))); }
+					 */
 				}
-			} else {
-				try {
-					PrintWriter out = new PrintWriter(new FileWriter(
-							FILE_RECOVERY_WINDOWS, true));
-					out.println(url);
-					out.close();
-				} catch (IOException e) {
-					e.printStackTrace();
-				}
+				collector.ack(tuple);
 			}
-
-		} catch (FileNotFoundException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (UnsupportedEncodingException e) {
+		} catch (SAXException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		} catch (IOException e) {
-			LOG.error("Error in communication with the OREST TAE api ["
-					+ get.getURI().toString() + "]");
-			try {
-				PrintWriter out = new PrintWriter(new FileWriter(
-						FILE_RECOVERY_WINDOWS, true));
-				out.println(url);
-				out.close();
-			} catch (IOException a) {
-				a.printStackTrace();
-			}
-		} catch (SAXException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		} catch (XPathExpressionException e) {
@@ -130,7 +90,7 @@ public class XmlToJsonBolt extends BaseRichBolt {
 	public void prepare(Map stormConf, TopologyContext context,
 			OutputCollector collector) {
 		this.collector = collector;
-		this.client = HttpClientBuilder.create().build();
+		// this.client = HttpClientBuilder.create().build();
 		this.xpath = XPathFactory.newInstance().newXPath();
 		DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
 		factory = DocumentBuilderFactory.newInstance();

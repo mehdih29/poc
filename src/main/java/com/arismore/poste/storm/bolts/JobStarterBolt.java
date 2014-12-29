@@ -18,8 +18,8 @@ import javax.xml.xpath.XPathFactory;
 
 import org.apache.http.HttpResponse;
 import org.apache.http.StatusLine;
-import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpGet;
+import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClientBuilder;
 import org.apache.log4j.Logger;
 import org.w3c.dom.Document;
@@ -45,7 +45,7 @@ public class JobStarterBolt extends BaseRichBolt {
 	private static String ENDDATE = "dateFin=";
 	private static String STARTINDEX = "startIndex=";
 	private static String COUNT = "count=";
-	private HttpClient client;
+	private CloseableHttpClient client;
 	private OutputCollector collector;
 	private static int STEP = 1000;
 	static Logger LOG = Logger.getLogger(JobStarterBolt.class);
@@ -59,7 +59,9 @@ public class JobStarterBolt extends BaseRichBolt {
 	}
 
 	public void execute(Tuple tuple) {
-
+		// just to test
+		client = HttpClientBuilder.create().build();
+		
 		String dateDebut = (String) tuple.getValue(0);
 		String dateFin = (String) tuple.getValue(1);
 
@@ -136,7 +138,44 @@ public class JobStarterBolt extends BaseRichBolt {
 	public void prepare(Map stormConf, TopologyContext context,
 			OutputCollector collector) {
 		this.collector = collector;
-		client = HttpClientBuilder.create().build();
+		/*
+		 * PoolingHttpClientConnectionManager connManager = new
+		 * PoolingHttpClientConnectionManager(); // Create socket configuration
+		 * SocketConfig socketConfig = SocketConfig.custom()
+		 * .setTcpNoDelay(true) .build(); // Configure the connection manager to
+		 * use socket configuration either // by default or for a specific host.
+		 * connManager.setDefaultSocketConfig(socketConfig);
+		 * connManager.setSocketConfig(new
+		 * HttpHost("national.cpn.prd.sie.courrier.intra.laposte.fr", 80),
+		 * socketConfig);
+		 */
+
+//		PoolingHttpClientConnectionManager basicConnManager = new PoolingHttpClientConnectionManager();
+//		HttpClientContext httpcontext = HttpClientContext.create();
+//
+//		// low level
+//		HttpRoute route = new HttpRoute(new HttpHost(
+//				"national.cpn.prd.sie.courrier.intra.laposte.fr", 80));
+//		ConnectionRequest connRequest = basicConnManager.requestConnection(
+//				route, null);
+//		HttpClientConnection conn;
+//		try {
+//			conn = connRequest.get(24, TimeUnit.HOURS);
+//			basicConnManager.connect(conn, route, 1000, httpcontext);
+//		} catch (ConnectionPoolTimeoutException e1) {
+//			// TODO Auto-generated catch block
+//			e1.printStackTrace();
+//		} catch (InterruptedException e1) {
+//			// TODO Auto-generated catch block
+//			e1.printStackTrace();
+//		} catch (ExecutionException e1) {
+//			// TODO Auto-generated catch block
+//			e1.printStackTrace();
+//		} catch (IOException e1) {
+//			// TODO Auto-generated catch block
+//			e1.printStackTrace();
+//		}
+
 		xpath = XPathFactory.newInstance().newXPath();
 		DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
 		factory = DocumentBuilderFactory.newInstance();

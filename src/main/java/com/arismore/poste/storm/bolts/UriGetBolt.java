@@ -12,8 +12,8 @@ import java.util.Map;
 import org.apache.commons.io.IOUtils;
 import org.apache.http.HttpResponse;
 import org.apache.http.StatusLine;
-import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpGet;
+import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClientBuilder;
 import org.apache.log4j.Logger;
 
@@ -34,7 +34,7 @@ public class UriGetBolt extends BaseRichBolt {
 	private static String ENDDATE = "dateFin=";
 	private static String STARTINDEX = "startIndex=";
 	private static String COUNT = "count=";
-	private HttpClient client;
+	private CloseableHttpClient client;
 	private OutputCollector collector;
 	static Logger LOG = Logger.getLogger(UriGetBolt.class);
 	private static String FILE_RECOVERY_SLIDING_WINDOWS = "/svdb/POC/_file_recovery_sliding_window";
@@ -44,7 +44,10 @@ public class UriGetBolt extends BaseRichBolt {
 	}
 
 	public void execute(Tuple tuple) {
-
+		
+		// juste to test
+		
+		client = HttpClientBuilder.create().build();
 		String dateDebut = (String) tuple.getValue(0);
 		String dateFin = (String) tuple.getValue(1);
 		Integer startIndex = (Integer) tuple.getValue(2);
@@ -109,7 +112,30 @@ public class UriGetBolt extends BaseRichBolt {
 	public void prepare(Map stormConf, TopologyContext context,
 			OutputCollector collector) {
 		this.collector = collector;
-		client = HttpClientBuilder.create().build();
+		/*PoolingHttpClientConnectionManager basicConnManager = new PoolingHttpClientConnectionManager();
+		HttpClientContext httpcontext = HttpClientContext.create();
 
+		// low level
+		HttpRoute route = new HttpRoute(new HttpHost(
+				"national.cpn.prd.sie.courrier.intra.laposte.fr", 80));
+		ConnectionRequest connRequest = basicConnManager.requestConnection(
+				route, null);
+		HttpClientConnection conn;
+		try {
+			conn = connRequest.get(24, TimeUnit.HOURS);
+			basicConnManager.connect(conn, route, 1000, httpcontext);
+		} catch (ConnectionPoolTimeoutException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		} catch (InterruptedException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		} catch (ExecutionException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		} catch (IOException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}*/
 	}
 }

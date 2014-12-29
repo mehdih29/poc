@@ -36,13 +36,19 @@ public class RestToFileTopologie {
 		 * The maximum amount of time given* to the topology to fully process* a
 		 * message emitted by a spout
 		 */
-		conf.put(Config.TOPOLOGY_MESSAGE_TIMEOUT_SECS, 600);
+		conf.put(Config.TOPOLOGY_MESSAGE_TIMEOUT_SECS, 60);
 
+		conf.put(Config.TOPOLOGY_RECEIVER_BUFFER_SIZE,             8);
+		conf.put(Config.TOPOLOGY_TRANSFER_BUFFER_SIZE,            32);
+		conf.put(Config.TOPOLOGY_EXECUTOR_RECEIVE_BUFFER_SIZE, 16384);
+		conf.put(Config.TOPOLOGY_EXECUTOR_SEND_BUFFER_SIZE,    16384);
+
+		
 		/*
 		 * How long without heartbeating a task can go* before nimbus will
 		 * consider the task dead* and reassign it to another location
 		 */
-		conf.put(Config.NIMBUS_TASK_TIMEOUT_SECS, 500);
+		//conf.put(Config.NIMBUS_TASK_TIMEOUT_SECS, 500);
 
 		/*
 		 * How long before a supervisor can go without* heartbeating before
