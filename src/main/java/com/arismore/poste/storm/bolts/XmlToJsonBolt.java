@@ -33,11 +33,10 @@ import com.arismore.poste.data.UniversalNamespaceCache;
 
 public class XmlToJsonBolt extends BaseRichBolt {
 
-	private static final long serialVersionUID = 111113L;
-	private HttpClient client;
+	private static final long serialVersionUID = 222111113L;
 	private OutputCollector collector;
 	static Logger LOG = Logger.getLogger(XmlToJsonBolt.class);
-	private static String FILE_RECOVERY_WINDOWS = "/dev/shm/_file_recovery_window";
+
 	XPath xpath = null;
 	DocumentBuilder builder;
 	Singleton instance = null;

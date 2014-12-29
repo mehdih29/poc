@@ -16,7 +16,7 @@ import com.arismore.poste.data.Singleton;
 
 public class JsonToESBolt extends BaseRichBolt {
 
-	private static final long serialVersionUID = 111114L;
+	private static final long serialVersionUID = 222111115L;
 	static Logger LOG = Logger.getLogger(JsonToESBolt.class);
 	Singleton instance = null;
 	BulkRequestBuilder bulkRequest = null;
@@ -27,7 +27,7 @@ public class JsonToESBolt extends BaseRichBolt {
 	public void execute(Tuple tuple) {
 		QueryEntry entry = (QueryEntry) tuple.getValue(0);
 		for (int j = 0; j < entry.getParcels().size(); j++) {
-/*
+
 			bulkRequest.add(instance
 					.getClient()
 					.prepareIndex(
@@ -39,7 +39,7 @@ public class JsonToESBolt extends BaseRichBolt {
 											.getId())
 					.setSource(
 							instance.getGson()
-									.toJson(entry.getParcels().get(j))));*/
+									.toJson(entry.getParcels().get(j))));
 		}
 		
 	}
@@ -47,6 +47,6 @@ public class JsonToESBolt extends BaseRichBolt {
 	public void prepare(Map stormConf, TopologyContext context,
 			OutputCollector collector) {
 		this.instance = Singleton.getInstance();
-		//this.bulkRequest = instance.getClient().prepareBulk();
+		this.bulkRequest = instance.getClient().prepareBulk();
 	}
 }
