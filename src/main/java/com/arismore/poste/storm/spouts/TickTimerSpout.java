@@ -23,7 +23,7 @@ import backtype.storm.utils.Utils;
 
 public class TickTimerSpout extends BaseRichSpout {
 
-	private static final long serialVersionUID = 1L;
+	private static final long serialVersionUID = 11122211L;
 	public static Logger LOG = LoggerFactory.getLogger(TickTimerSpout.class);
 	boolean _isDistributed;
 	SpoutOutputCollector _collector;

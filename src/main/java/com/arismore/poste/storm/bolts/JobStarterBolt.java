@@ -38,7 +38,7 @@ import com.arismore.poste.data.UniversalNamespaceCache;
 
 public class JobStarterBolt extends BaseRichBolt {
 
-	private static final long serialVersionUID = 111111L;
+	private static final long serialVersionUID = 2222111111L;
 	static String STREAMING_API_URL = "http://national.cpn.prd.sie.courrier.intra.laposte.fr/National/enveloppes/v1/externe?";
 	private static String SEP = "&";
 	private static String BEGINDATE = "dateDebut=";

@@ -27,7 +27,7 @@ import backtype.storm.tuple.Tuple;
 
 public class UriToFileBolt extends BaseRichBolt {
 
-	private static final long serialVersionUID = 111114L;
+	private static final long serialVersionUID = 2222111114444444444L;
 	static String STREAMING_API_URL = "http://national.cpn.prd.sie.courrier.intra.laposte.fr/National/enveloppes/v1/externe?";
 	private HttpClient client;
 	private OutputCollector collector;

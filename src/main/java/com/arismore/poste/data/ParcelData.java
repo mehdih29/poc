@@ -1,5 +1,6 @@
 package com.arismore.poste.data;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 
 import javax.xml.xpath.XPath;
@@ -11,8 +12,12 @@ import org.w3c.dom.NodeList;
 
 import com.google.gson.annotations.Expose;
 
-public class ParcelData implements Cloneable {
+public class ParcelData implements Cloneable, Serializable {
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 21112345L;
 	private String isie;
 	private Boolean image;
 	private String format;
@@ -85,6 +90,15 @@ public class ParcelData implements Cloneable {
 						+ "]/a:content/:div/:span[@class='derivation']/text()")
 				.evaluate(document, XPathConstants.STRING);
 
+
+		if(this.updated == ""){
+			this.updated = null;
+		}
+
+		if(this.published == ""){
+			this.published = null;
+		}
+		
 		/*
 		 * NodeList traitement = (NodeList) xpath.compile( "/a:entry[" + index +
 		 * "]/a:content/:div/:ul[@class='traitement']/:li") .evaluate(document,

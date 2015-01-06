@@ -5,8 +5,9 @@ import backtype.storm.StormSubmitter;
 import backtype.storm.topology.TopologyBuilder;
 
 import com.arismore.poste.storm.bolts.JobStarterBolt;
+import com.arismore.poste.storm.bolts.TickTupleToES;
 import com.arismore.poste.storm.bolts.UriGetBolt;
-import com.arismore.poste.storm.bolts.WriteToFileBolt;
+import com.arismore.poste.storm.bolts.XmlToJsonBolt;
 import com.arismore.poste.storm.spouts.TickTimerSpout;
 
 /**
@@ -25,8 +26,16 @@ public class RestToFileTopologie {
 		builder.setBolt("uriGet", new UriGetBolt(), 5).setNumTasks(10)
 				.shuffleGrouping("jobStarter");
 
-		builder.setBolt("tofile", new WriteToFileBolt(), 2).setNumTasks(8)
+		builder.setBolt("toJson", new XmlToJsonBolt(), 10).setNumTasks(20)
 				.shuffleGrouping("uriGet");
+
+		builder.setBolt("toES", new TickTupleToES(), 5).setNumTasks(10)
+				.shuffleGrouping("toJson");
+		// builder.setBolt("toES", new JsonToESBolt() ,
+		// 5).setNumTasks(10).shuffleGrouping("toJson");
+
+		// builder.setBolt("tofile", new WriteToFileBolt(),
+		// 2).setNumTasks(8).shuffleGrouping("uriGet");
 
 		Config conf = new Config();
 		// conf.setMessageTimeoutSecs(120);
@@ -38,28 +47,27 @@ public class RestToFileTopologie {
 		 */
 		conf.put(Config.TOPOLOGY_MESSAGE_TIMEOUT_SECS, 60);
 
-		conf.put(Config.TOPOLOGY_RECEIVER_BUFFER_SIZE,             8);
-		conf.put(Config.TOPOLOGY_TRANSFER_BUFFER_SIZE,            32);
+		conf.put(Config.TOPOLOGY_RECEIVER_BUFFER_SIZE, 8);
+		conf.put(Config.TOPOLOGY_TRANSFER_BUFFER_SIZE, 32);
 		conf.put(Config.TOPOLOGY_EXECUTOR_RECEIVE_BUFFER_SIZE, 16384);
-		conf.put(Config.TOPOLOGY_EXECUTOR_SEND_BUFFER_SIZE,    16384);
+		conf.put(Config.TOPOLOGY_EXECUTOR_SEND_BUFFER_SIZE, 16384);
 
-		
 		/*
 		 * How long without heartbeating a task can go* before nimbus will
 		 * consider the task dead* and reassign it to another location
 		 */
-		//conf.put(Config.NIMBUS_TASK_TIMEOUT_SECS, 500);
+		// conf.put(Config.NIMBUS_TASK_TIMEOUT_SECS, 500);
 
 		/*
 		 * How long before a supervisor can go without* heartbeating before
 		 * nimbus considers it dead* and stops assigning new work to it
 		 */
-		//conf.NIMBUS_SUPERVISOR_TIMEOUT_SECS = "600";
+		// conf.NIMBUS_SUPERVISOR_TIMEOUT_SECS = "600";
 		// .put(Config.NIMBUS_SUPERVISOR_TIMEOUT_SECS, 600);
 
 		/*
-		 * storm.messaging.netty.buffer_size: 209715200 (buffersize in bytes,here is 200MByte) 
-		 * storm.messaging.netty.max_retries: 10
+		 * storm.messaging.netty.buffer_size: 209715200 (buffersize in
+		 * bytes,here is 200MByte) storm.messaging.netty.max_retries: 10
 		 * storm.messaging.netty.min_wait_ms: 5000
 		 * storm.messaging.netty.max_wait_ms: 10000
 		 */
@@ -67,8 +75,8 @@ public class RestToFileTopologie {
 		conf.setDebug(false);
 
 		if (args != null && args.length > 0) {
-			conf.setNumWorkers(9);
-			conf.setNumAckers(1);
+			conf.setNumWorkers(22);
+			conf.setNumAckers(3);
 
 			StormSubmitter.submitTopologyWithProgressBar(args[0], conf,
 					builder.createTopology());

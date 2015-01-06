@@ -16,7 +16,7 @@ import backtype.storm.tuple.Tuple;
 
 public class WriteToFileBolt extends BaseRichBolt {
 
-	private static final long serialVersionUID = 222111112L;
+	private static final long serialVersionUID = 222111113L;
 	private OutputCollector collector;
 	static Logger LOG = Logger.getLogger(WriteToFileBolt.class);
 

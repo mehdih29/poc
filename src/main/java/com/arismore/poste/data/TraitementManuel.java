@@ -8,6 +8,10 @@ import org.w3c.dom.Document;
 
 public class TraitementManuel extends Traitement {
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1222111122233445L;
 	private String date;
 	private String type;
 	private String etat;
@@ -102,6 +106,13 @@ public class TraitementManuel extends Traitement {
 									+ i
 									+ "]/:div[@class='client']/:span[@class='raisonFin']/text()")
 					.evaluate(document, XPathConstants.STRING);
+		
+			if(this.date == ""){
+				this.date = null;
+			}
+			if(this.datePublication == ""){
+				this.datePublication = null;
+			}
 
 		} catch (XPathExpressionException e) {
 			// TODO Auto-generated catch block

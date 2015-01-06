@@ -12,7 +12,6 @@ import javax.xml.xpath.XPathConstants;
 import javax.xml.xpath.XPathExpressionException;
 import javax.xml.xpath.XPathFactory;
 
-import org.apache.http.client.HttpClient;
 import org.apache.log4j.Logger;
 import org.w3c.dom.Document;
 import org.w3c.dom.NodeList;
@@ -33,7 +32,7 @@ import com.arismore.poste.data.UniversalNamespaceCache;
 
 public class XmlToJsonBolt extends BaseRichBolt {
 
-	private static final long serialVersionUID = 222111113L;
+	private static final long serialVersionUID = 222111114L;
 	private OutputCollector collector;
 	static Logger LOG = Logger.getLogger(XmlToJsonBolt.class);
 
@@ -65,14 +64,14 @@ public class XmlToJsonBolt extends BaseRichBolt {
 			if (entries.getLength() > 0) {
 				for (int i = 1; i <= entries.getLength(); i++) {
 					entry = new QueryEntry(document, i, xpath);
-					collector.emit(new Values(entry));
+					this.collector.emit(new Values(entry));
 					/*
 					 * for (int j = 0; j < entry.getParcels().size(); j++) {
 					 * collector.emit(new Values(instance.getGson()
 					 * .toJson(entry.getParcels().get(j)))); }
 					 */
 				}
-				collector.ack(tuple);
+				this.collector.ack(tuple);
 			}
 		} catch (SAXException e) {
 			// TODO Auto-generated catch block
@@ -89,7 +88,6 @@ public class XmlToJsonBolt extends BaseRichBolt {
 	public void prepare(Map stormConf, TopologyContext context,
 			OutputCollector collector) {
 		this.collector = collector;
-		// this.client = HttpClientBuilder.create().build();
 		this.xpath = XPathFactory.newInstance().newXPath();
 		DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
 		factory = DocumentBuilderFactory.newInstance();

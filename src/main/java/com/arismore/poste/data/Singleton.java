@@ -1,31 +1,27 @@
 package com.arismore.poste.data;
 
-import org.elasticsearch.client.Client;
-import org.elasticsearch.client.transport.TransportClient;
-import org.elasticsearch.common.transport.InetSocketTransportAddress;
-
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
 public class Singleton {
 
 	Gson gson;
-	Client client;
+	//Client client;
 
 	private Singleton() {
 		this.gson = new GsonBuilder().create();
-		this.client = new TransportClient()
+		/*this.client = new TransportClient()
 				.addTransportAddress(new InetSocketTransportAddress(
-						"172.30.11.133", 9300));
+						"127.0.0.1", 9300));*/
 	}
 
 	public Gson getGson() {
 		return gson;
 	}
 
-	public Client getClient() {
+	/*public Client getClient() {
 		return client;
-	}
+	}*/
 
 	/** Holder */
 	private static class SingletonHolder {

@@ -7,6 +7,10 @@ import javax.xml.xpath.XPathExpressionException;
 import org.w3c.dom.Document;
 
 public class TraitementMachine extends Traitement {
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 122233334445555L;
 	private String debutTraitement;
 	private String idPlateforme;
 	private String idMachineTri;
@@ -189,6 +193,13 @@ public class TraitementMachine extends Traitement {
 							+ "]/a:content/:div/:ul[@class='traitement']/:li["
 							+ i + "]/:span[@class='datePublication']/text()")
 					.evaluate(document, XPathConstants.STRING);
+			
+			if(this.debutTraitement == ""){
+				this.debutTraitement = null;
+			}
+			if(this.datePublication == ""){
+				this.datePublication = null;
+			}
 
 			/*
 			 * System.out.println("debutTraitement >>>"+debutTraitement);

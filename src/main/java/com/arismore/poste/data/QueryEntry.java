@@ -2,6 +2,7 @@ package com.arismore.poste.data;
 
 import java.io.FileNotFoundException;
 import java.io.PrintWriter;
+import java.io.Serializable;
 import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 
@@ -9,28 +10,30 @@ import javax.xml.xpath.XPath;
 import javax.xml.xpath.XPathConstants;
 import javax.xml.xpath.XPathExpressionException;
 
-import org.elasticsearch.action.bulk.BulkRequestBuilder;
-import org.elasticsearch.action.bulk.BulkResponse;
 import org.w3c.dom.Document;
 import org.w3c.dom.NodeList;
 
-public class QueryEntry {
-
+public class QueryEntry implements Serializable {
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 22122110L;
 	private ArrayList<ParcelData> parcels = null;
-	private Singleton instance = null;
+	//private Singleton instance = null;
 
 	public QueryEntry(Document document, int index, XPath xpath) {
 
 		try {
 
-			instance = Singleton.getInstance();
+			//instance = Singleton.getInstance();
 			PrintWriter writer = new PrintWriter("the-file-name.txt", "UTF-8");
 
 			this.parcels = new ArrayList<ParcelData>();
 			ParcelData parcel = new ParcelData(index, document, xpath);
 			ParcelData clone = null;
 
-			//BulkRequestBuilder bulkRequest = instance.getClient().prepareBulk();
+			// BulkRequestBuilder bulkRequest =
+			// instance.getClient().prepareBulk();
 
 			NodeList traitement = (NodeList) xpath.compile(
 					"/a:feed/a:entry[" + index
@@ -42,17 +45,15 @@ public class QueryEntry {
 					clone.setTraitement(new TraitementMachine(index, i,
 							document, xpath));
 					this.parcels.add(clone);
-					System.out.println(instance.getGson().toJson(clone));
+					//System.out.println(instance.getGson().toJson(clone));
 					// writer.println(gson.toJson(clone));
 
-				/*	bulkRequest.add(instance
-							.getClient()
-							.prepareIndex(
-									"parceldata",
-									"traitement",
-									clone.getIsie() + "|"
-											+ clone.getTraitement().getId())
-							.setSource(instance.getGson().toJson(clone)));*/
+					/*
+					 * bulkRequest.add(instance .getClient() .prepareIndex(
+					 * "parceldata", "traitement", clone.getIsie() + "|" +
+					 * clone.getTraitement().getId())
+					 * .setSource(instance.getGson().toJson(clone)));
+					 */
 
 				}
 			}
@@ -69,26 +70,25 @@ public class QueryEntry {
 							document, xpath));
 					this.parcels.add(clone);
 
-				/*	bulkRequest.add(instance
-							.getClient()
-							.prepareIndex(
-									"parceldata",
-									"traitement",
-									clone.getIsie() + "|"
-											+ clone.getTraitement().getId())
-							.setSource(instance.getGson().toJson(clone)));*/
+					/*
+					 * bulkRequest.add(instance .getClient() .prepareIndex(
+					 * "parceldata", "traitement", clone.getIsie() + "|" +
+					 * clone.getTraitement().getId())
+					 * .setSource(instance.getGson().toJson(clone)));
+					 */
 				}
 			}
 
-			/*BulkResponse bulkResponse = bulkRequest.execute().actionGet();
+			/*
+			 * BulkResponse bulkResponse = bulkRequest.execute().actionGet();
+			 * 
+			 * if (bulkResponse.hasFailures()) {
+			 * System.out.println("bulk failures");
+			 * System.out.println(bulkResponse.getItems().toString()); }
+			 */
 
-			if (bulkResponse.hasFailures()) {
-				System.out.println("bulk failures");
-				System.out.println(bulkResponse.getItems().toString());
-			}*/
-
-			System.out.println("parcels traitement size");
-			System.out.println(this.parcels.size());
+			//System.out.println("parcels traitement size");
+			//System.out.println(this.parcels.size());
 
 			writer.close();
 
@@ -107,11 +107,12 @@ public class QueryEntry {
 		}
 	}
 
-	public Singleton getInstance() {
-		return instance;
-	}
-
 	public ArrayList<ParcelData> getParcels() {
 		return parcels;
 	}
+	
+	 /*@Override
+	 public String toString(){
+		 return this.parcels.toString();
+	 }*/
 }
