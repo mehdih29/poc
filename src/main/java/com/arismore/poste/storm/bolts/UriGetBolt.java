@@ -44,9 +44,9 @@ public class UriGetBolt extends BaseRichBolt {
 	}
 
 	public void execute(Tuple tuple) {
-		
+
 		// juste to test
-		
+
 		client = HttpClientBuilder.create().build();
 		String dateDebut = (String) tuple.getValue(0);
 		String dateFin = (String) tuple.getValue(1);
@@ -69,18 +69,19 @@ public class UriGetBolt extends BaseRichBolt {
 			if (status.getStatusCode() == 200) {
 				InputStream inputStream = response.getEntity().getContent();
 
-				collector.emit(
+				this.collector.emit(
 						tuple,
 						new Values(BEGINDATE + dateDebut + SEP + ENDDATE
 								+ dateFin + SEP + STARTINDEX + startIndex + SEP
 								+ COUNT + count, IOUtils.toString(inputStream,
 								"utf-8")));
-				collector.ack(tuple);
-				LOG.error("Http get took: "
+				this.collector.ack(tuple);
+				LOG.debug("Http get took: "
 						+ ((new Date()).getTime() - currentTimestamp));
 
 			} else {
 				try {
+					this.collector.fail(tuple);
 					PrintWriter out = new PrintWriter(new FileWriter(
 							FILE_RECOVERY_SLIDING_WINDOWS, true));
 					out.println(url);
@@ -96,6 +97,7 @@ public class UriGetBolt extends BaseRichBolt {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		} catch (IOException e) {
+			this.collector.fail(tuple);
 			LOG.error("Error in communication with the OREST TAE api ["
 					+ get.getURI().toString() + "]");
 			try {
@@ -112,30 +114,5 @@ public class UriGetBolt extends BaseRichBolt {
 	public void prepare(Map stormConf, TopologyContext context,
 			OutputCollector collector) {
 		this.collector = collector;
-		/*PoolingHttpClientConnectionManager basicConnManager = new PoolingHttpClientConnectionManager();
-		HttpClientContext httpcontext = HttpClientContext.create();
-
-		// low level
-		HttpRoute route = new HttpRoute(new HttpHost(
-				"national.cpn.prd.sie.courrier.intra.laposte.fr", 80));
-		ConnectionRequest connRequest = basicConnManager.requestConnection(
-				route, null);
-		HttpClientConnection conn;
-		try {
-			conn = connRequest.get(24, TimeUnit.HOURS);
-			basicConnManager.connect(conn, route, 1000, httpcontext);
-		} catch (ConnectionPoolTimeoutException e1) {
-			// TODO Auto-generated catch block
-			e1.printStackTrace();
-		} catch (InterruptedException e1) {
-			// TODO Auto-generated catch block
-			e1.printStackTrace();
-		} catch (ExecutionException e1) {
-			// TODO Auto-generated catch block
-			e1.printStackTrace();
-		} catch (IOException e1) {
-			// TODO Auto-generated catch block
-			e1.printStackTrace();
-		}*/
 	}
 }

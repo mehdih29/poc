@@ -15,8 +15,6 @@ import backtype.storm.topology.OutputFieldsDeclarer;
 import backtype.storm.topology.base.BaseRichBolt;
 import backtype.storm.tuple.Tuple;
 
-import com.arismore.poste.data.QueryEntry;
-import com.arismore.poste.data.Singleton;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
@@ -26,27 +24,17 @@ public class JsonToESBolt extends BaseRichBolt {
 	static Logger LOG = Logger.getLogger(JsonToESBolt.class);
 	private OutputCollector collector;
 	// Singleton instance = null;
-	private Gson gson = null;
 	private Client client = null;
 
 	public void declareOutputFields(OutputFieldsDeclarer declarer) {
 	}
 
 	public void execute(Tuple tuple) {
-		QueryEntry entry = (QueryEntry) tuple.getValue(0);
 		BulkRequestBuilder bulkRequest = client.prepareBulk();
-		for (int j = 0; j < entry.getParcels().size(); j++) {
-
-			bulkRequest.add(this.client
-					.prepareIndex(
-							"parceldata",
-							"traitement",
-							entry.getParcels().get(j).getIsie()
-									+ "|"
-									+ entry.getParcels().get(j).getTraitement()
-											.getId()).setSource(
-							this.gson.toJson(entry.getParcels().get(j))));
-		}
+		String id = (String) tuple.getValue(0);
+		String json = (String) tuple.getValue(1);
+		bulkRequest.add(this.client
+				.prepareIndex("parceldata", "traitement", id).setSource(json));
 		BulkResponse bulkResponse = bulkRequest.execute().actionGet();
 
 		if (bulkResponse.hasFailures()) {
@@ -63,6 +51,5 @@ public class JsonToESBolt extends BaseRichBolt {
 		this.client = new TransportClient()
 				.addTransportAddress(new InetSocketTransportAddress(
 						"127.0.0.1", 9300));
-		this.gson = new GsonBuilder().create();
 	}
 }

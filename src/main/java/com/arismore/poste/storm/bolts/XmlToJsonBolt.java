@@ -26,28 +26,35 @@ import backtype.storm.tuple.Fields;
 import backtype.storm.tuple.Tuple;
 import backtype.storm.tuple.Values;
 
+import com.arismore.poste.data.ParcelData;
 import com.arismore.poste.data.QueryEntry;
-import com.arismore.poste.data.Singleton;
 import com.arismore.poste.data.UniversalNamespaceCache;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 
 public class XmlToJsonBolt extends BaseRichBolt {
 
 	private static final long serialVersionUID = 222111114L;
 	private OutputCollector collector;
 	static Logger LOG = Logger.getLogger(XmlToJsonBolt.class);
+	static private Gson gson = null;
 
 	XPath xpath = null;
 	DocumentBuilder builder;
-	Singleton instance = null;
 
 	public void declareOutputFields(OutputFieldsDeclarer declarer) {
-		declarer.declare(new Fields("Parcel"));
+		declarer.declare(new Fields("Id", "Json"));// new Fields("Parcel"));
 	}
 
 	public void execute(Tuple tuple) {
 		// TODO Auto-generated method stub
-		String url = (String) tuple.getValue(0);
+
+		// don't need the first component of the tuple in this bolt
+		// String url = (String) tuple.getValue(0);
+
 		String content = (String) tuple.getValue(1);
+		ParcelData parcel;
+		String id;
 
 		InputSource xmlString = new InputSource(new StringReader(content));
 		Document document;
@@ -64,12 +71,13 @@ public class XmlToJsonBolt extends BaseRichBolt {
 			if (entries.getLength() > 0) {
 				for (int i = 1; i <= entries.getLength(); i++) {
 					entry = new QueryEntry(document, i, xpath);
-					this.collector.emit(new Values(entry));
-					/*
-					 * for (int j = 0; j < entry.getParcels().size(); j++) {
-					 * collector.emit(new Values(instance.getGson()
-					 * .toJson(entry.getParcels().get(j)))); }
-					 */
+					for (int j = 0; j < entry.getParcels().size(); j++) {
+						parcel = (ParcelData) entry.getParcels().get(j);
+						id = parcel.getIsie() + "|"
+								+ parcel.getTraitement().getId();
+						this.collector.emit(tuple, new Values(id,
+								XmlToJsonBolt.gson.toJson(parcel)));
+					}
 				}
 				this.collector.ack(tuple);
 			}
@@ -98,6 +106,6 @@ public class XmlToJsonBolt extends BaseRichBolt {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		this.instance = Singleton.getInstance();
+		XmlToJsonBolt.gson = new GsonBuilder().create();
 	}
 }

@@ -5,31 +5,35 @@ import backtype.storm.StormSubmitter;
 import backtype.storm.topology.TopologyBuilder;
 
 import com.arismore.poste.storm.bolts.JobStarterBolt;
+import com.arismore.poste.storm.bolts.TickTupleToES;
 import com.arismore.poste.storm.bolts.UriGetBolt;
 import com.arismore.poste.storm.bolts.WriteToFileBolt;
+import com.arismore.poste.storm.bolts.XmlToJsonBolt;
 import com.arismore.poste.storm.spouts.TickTimerSpout;
 
 /**
- * REST to file Storm topology.
+ * REST to ElasticSearch (batching with tickTuple) Storm topology.
  */
-public class RestToFileTopologie {
+public class RestToEsBatching {
 
 	public static void main(String[] args) throws Exception {
 		TopologyBuilder builder = new TopologyBuilder();
 
 		builder.setSpout("slidingWindow", new TickTimerSpout(), 1);
-		// --> 2/1= 2 tasks per executors
+		// --> 2/1 = 2 tasks per executors
 		builder.setBolt("jobStarter", new JobStarterBolt(), 1).shuffleGrouping(
 				"slidingWindow");
-		// --> 200/100= 2 tasks per executors
-		builder.setBolt("uriGet", new UriGetBolt(), 5).setNumTasks(10)
+		// --> 10/5 = 2 tasks per executors
+		builder.setBolt("uriGet", new UriGetBolt(), 3).setNumTasks(6)
 				.shuffleGrouping("jobStarter");
 
-		builder.setBolt("tofile", new WriteToFileBolt(), 2).setNumTasks(8)
+		builder.setBolt("toJson", new XmlToJsonBolt(), 10).setNumTasks(30)
 				.shuffleGrouping("uriGet");
 
-		Config conf = new Config();
+		builder.setBolt("BatchingtoES", new TickTupleToES(), 5).setNumTasks(15)
+				.shuffleGrouping("toJson");
 
+		Config conf = new Config();
 		/*
 		 * The maximum amount of time given* to the topology to fully process* a
 		 * message emitted by a spout

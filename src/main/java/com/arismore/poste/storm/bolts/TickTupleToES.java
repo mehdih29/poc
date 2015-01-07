@@ -13,11 +13,6 @@ import org.elasticsearch.client.Client;
 import org.elasticsearch.client.transport.TransportClient;
 import org.elasticsearch.common.transport.InetSocketTransportAddress;
 
-import com.arismore.poste.data.QueryEntry;
-import com.arismore.poste.util.TupleHelpers;
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
-
 import backtype.storm.Config;
 import backtype.storm.task.OutputCollector;
 import backtype.storm.task.TopologyContext;
@@ -25,13 +20,14 @@ import backtype.storm.topology.OutputFieldsDeclarer;
 import backtype.storm.topology.base.BaseRichBolt;
 import backtype.storm.tuple.Tuple;
 
+import com.arismore.poste.util.TupleHelpers;
+
 public class TickTupleToES extends BaseRichBolt {
 
 	private static final long serialVersionUID = 22211111566L;
 	static Logger LOG = Logger.getLogger(TickTupleToES.class);
 	private OutputCollector collector;
-	// Singleton instance = null;
-	private Gson gson = null;
+	// private Gson gson = null;
 	private Client client = null;
 
 	/** The queue holding tuples in a batch. */
@@ -96,21 +92,26 @@ public class TickTupleToES extends BaseRichBolt {
 		lastBatchProcessTimeSeconds = System.currentTimeMillis() / 1000;
 		List<Tuple> tuples = new ArrayList<Tuple>();
 		queue.drainTo(tuples);
+		if (tuples.size() == 0){
+			return;
+		}
 		BulkRequestBuilder bulkRequest = client.prepareBulk();
 		BulkResponse bulkResponse = null;
 		for (Tuple tuple : tuples) {
-			QueryEntry entry = (QueryEntry) tuple.getValue(0);
-			for (int j = 0; j < entry.getParcels().size(); j++) {
 
-				bulkRequest.add(this.client.prepareIndex(
-						"parceldata",
-						"traitement",
-						entry.getParcels().get(j).getIsie()
-								+ "|"
-								+ entry.getParcels().get(j).getTraitement()
-										.getId()).setSource(
-						this.gson.toJson(entry.getParcels().get(j))));
-			}
+			String id = (String) tuple.getValue(0);
+			String json = (String) tuple.getValue(1);
+			bulkRequest.add(this.client.prepareIndex("parceldata",
+					"traitement", id).setSource(json));
+			/*
+			 * QueryEntry entry = (QueryEntry) tuple.getValue(0); for (int j =
+			 * 0; j < entry.getParcels().size(); j++) {
+			 * 
+			 * bulkRequest.add(this.client.prepareIndex( "parceldata",
+			 * "traitement", entry.getParcels().get(j).getIsie() + "|" +
+			 * entry.getParcels().get(j).getTraitement() .getId()).setSource(
+			 * this.gson.toJson(entry.getParcels().get(j)))); }
+			 */
 		}
 		try {
 			// Execute bulk request and get individual tuple responses back.
@@ -145,7 +146,7 @@ public class TickTupleToES extends BaseRichBolt {
 		this.client = new TransportClient()
 				.addTransportAddress(new InetSocketTransportAddress(
 						"127.0.0.1", 9300));
-		this.gson = new GsonBuilder().create();
+		// this.gson = new GsonBuilder().create();
 
 	}
 
@@ -158,7 +159,5 @@ public class TickTupleToES extends BaseRichBolt {
 	}
 
 	public void declareOutputFields(OutputFieldsDeclarer declarer) {
-		// TODO Auto-generated method stub
-
 	}
 }
