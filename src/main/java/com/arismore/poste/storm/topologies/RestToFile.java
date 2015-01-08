@@ -12,7 +12,7 @@ import com.arismore.poste.storm.spouts.TickTimerSpout;
 /**
  * REST to file Storm topology.
  */
-public class RestToFileTopologie {
+public class RestToFile {
 
 	public static void main(String[] args) throws Exception {
 		TopologyBuilder builder = new TopologyBuilder();
