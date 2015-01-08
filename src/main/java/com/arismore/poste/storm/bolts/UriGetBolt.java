@@ -45,8 +45,6 @@ public class UriGetBolt extends BaseRichBolt {
 
 	public void execute(Tuple tuple) {
 
-		// juste to test
-
 		client = HttpClientBuilder.create().build();
 		String dateDebut = (String) tuple.getValue(0);
 		String dateFin = (String) tuple.getValue(1);

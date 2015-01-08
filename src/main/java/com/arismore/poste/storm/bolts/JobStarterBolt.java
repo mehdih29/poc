@@ -59,7 +59,6 @@ public class JobStarterBolt extends BaseRichBolt {
 	}
 
 	public void execute(Tuple tuple) {
-		// just to test
 		client = HttpClientBuilder.create().build();
 		
 		String dateDebut = (String) tuple.getValue(0);

@@ -27,7 +27,6 @@ public class TickTupleToES extends BaseRichBolt {
 	private static final long serialVersionUID = 22211111566L;
 	static Logger LOG = Logger.getLogger(TickTupleToES.class);
 	private OutputCollector collector;
-	// private Gson gson = null;
 	private Client client = null;
 
 	/** The queue holding tuples in a batch. */
@@ -51,12 +50,12 @@ public class TickTupleToES extends BaseRichBolt {
 		// Check if the tuple is of type Tick Tuple
 		if (TupleHelpers.isTickTuple(tuple)) {
 
-			// If so, it is indication for batch flush. But don't flush if
-			// previous
-			// flush was done very recently (either due to batch size threshold
-			// was
-			// crossed or because of another tick tuple
-			//
+			/*
+			 * If so, it is indication for batch flush. But don't flush if
+			 * previous flush was done very recently (either due to batch size
+			 * threshold was crossed or because of another tick tuple
+			 */
+
 			if ((System.currentTimeMillis() / 1000 - lastBatchProcessTimeSeconds) >= batchIntervalInSec) {
 				LOG.debug("Current queue size is " + this.queue.size()
 						+ ". But received tick tuple so executing the batch");
@@ -92,7 +91,7 @@ public class TickTupleToES extends BaseRichBolt {
 		lastBatchProcessTimeSeconds = System.currentTimeMillis() / 1000;
 		List<Tuple> tuples = new ArrayList<Tuple>();
 		queue.drainTo(tuples);
-		if (tuples.size() == 0){
+		if (tuples.size() == 0) {
 			return;
 		}
 		BulkRequestBuilder bulkRequest = client.prepareBulk();
@@ -103,15 +102,6 @@ public class TickTupleToES extends BaseRichBolt {
 			String json = (String) tuple.getValue(1);
 			bulkRequest.add(this.client.prepareIndex("parceldata",
 					"traitement", id).setSource(json));
-			/*
-			 * QueryEntry entry = (QueryEntry) tuple.getValue(0); for (int j =
-			 * 0; j < entry.getParcels().size(); j++) {
-			 * 
-			 * bulkRequest.add(this.client.prepareIndex( "parceldata",
-			 * "traitement", entry.getParcels().get(j).getIsie() + "|" +
-			 * entry.getParcels().get(j).getTraitement() .getId()).setSource(
-			 * this.gson.toJson(entry.getParcels().get(j)))); }
-			 */
 		}
 		try {
 			// Execute bulk request and get individual tuple responses back.
@@ -122,8 +112,6 @@ public class TickTupleToES extends BaseRichBolt {
 			for (int counter = 0; counter < responses.length; counter++) {
 				response = responses[counter];
 				if (response.isFailed()) {
-					// ElasticSearchDocument failedEsDocument =
-					// this.tupleMapper.mapToDocument(tuples.get(counter));
 					LOG.error("Failed to process tuple # " + counter);
 					this.collector.fail(tuples.get(counter));
 				} else {
@@ -146,8 +134,6 @@ public class TickTupleToES extends BaseRichBolt {
 		this.client = new TransportClient()
 				.addTransportAddress(new InetSocketTransportAddress(
 						"127.0.0.1", 9300));
-		// this.gson = new GsonBuilder().create();
-
 	}
 
 	@Override
